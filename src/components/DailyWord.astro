@@ -34,7 +34,7 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
   <p class="message" data-message aria-live="assertive"></p>
 
   <p class="case label">Type case</p>
-  <div class="keys" data-keys aria-label="Keyboard">
+  <div class="keys" data-keys role="group" aria-label="Keyboard">
     {rows.map((row, i) => (
       <div class="keyrow">
         {i === 2 && <button type="button" class="key wide" data-key="Enter">Enter</button>}
