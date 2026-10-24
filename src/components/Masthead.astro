@@ -34,7 +34,7 @@ const wx = await weather();
       <div class="ear-right">
         <Ear title="Price" align="right">
           <p><strong>Free</strong>, online edition</p>
-          <p><Stamp text="Late edition" /></p>
+          <p class="stamped"><Stamp text="Late edition" /></p>
         </Ear>
       </div>
     </div>
@@ -111,6 +111,7 @@ const wx = await weather();
   /* Both ears fill their column and the height of the nameplate, so they print as a matched pair. */
   .ear-left, .ear-right { align-self: stretch; display: flex; }
   .ear-left > :global(.ear), .ear-right > :global(.ear) { flex: 1; }
+  .stamped { margin-top: var(--space-stack); } /* room for the tilt, so the stamp clears the price line */
   .name { text-align: center; min-width: 0; container-type: inline-size; }
   .nameplate {
     font-family: var(--font-nameplate);
