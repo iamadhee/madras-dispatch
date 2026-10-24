@@ -44,7 +44,7 @@ export const site = {
   sites: [
     { name: "Promptster", host: "promptster.adheeban.com", url: "https://promptster.adheeban.com", tagline: "Learn to write prompts. Three paths, 31 challenges, instant feedback.", status: "live", image: promptsterImage },
     { name: "tldr", host: "tldr.adheeban.com", url: "https://tldr.adheeban.com", tagline: "The hard parts of tech, five minutes at a time.", status: "live", image: tldrImage },
-    { name: "The Watch Project", host: "twp.adheeban.com", url: "https://twp.adheeban.com", tagline: "A playground for watch designs: cases, dials, hands and straps.", status: "beta", image: twpImage },
+    { name: "The Watch Project", host: "twp.adheeban.com", url: "https://twp.adheeban.com", tagline: "A playground for watch designs: cases, dials, hands and straps.", status: "live", image: twpImage },
   ],
   /** Sections of the paper, in print order. `page` is the folio shown on that section's first page. */
   sections: [
