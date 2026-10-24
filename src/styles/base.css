@@ -57,6 +57,7 @@ body::after {
 
 /* The ink. Every letter spreads a hair into the paper. */
 body { text-shadow: 0 0 var(--ink-spread); }
+button { text-shadow: inherit; } /* the browser resets it on buttons; they are printed too */
 
 h1, h2, h3, h4, p, figure, blockquote, ul, ol, dl, table { margin: 0; }
 
