@@ -83,6 +83,7 @@
   --space-page-bottom: var(--primitive-space-900);
 
   /* Rules */
+  --stroke-hairline: var(--primitive-stroke-100);
   --rule-hairline: var(--primitive-stroke-100) solid var(--color-rule);
   --rule-hairline-soft: var(--primitive-stroke-100) solid var(--color-rule-soft);
   --rule-medium: var(--primitive-stroke-200) solid var(--color-rule);

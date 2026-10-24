@@ -34,7 +34,19 @@ const { current } = Astro.props;
   .item + .item { border-left: var(--rule-hairline); }
   .item a:hover { background: var(--color-paper-tint); color: var(--color-ink); }
   .item a[aria-current="page"] { background: var(--color-ink); color: var(--color-paper); }
-  @media (max-width: 36rem) {
-    .item a { padding-inline: var(--space-stack); }
+  /* Too narrow for one row: a ruled grid, so no row starts with a stray rule. Eight sections fill four columns, or two. */
+  @media (max-width: 64.5rem) {
+    .list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--stroke-hairline);
+      background: var(--color-rule);
+    }
+    .item { background: var(--color-paper); text-align: center; }
+    .item + .item { border-left: 0; }
+    .item a { padding-inline: var(--space-inline); }
+  }
+  @media (max-width: 30rem) {
+    .list { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
