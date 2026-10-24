@@ -9,6 +9,9 @@ export interface Weather {
   summary: string;
   high: string;
   low: string;
+  /** Local clock times, such as "6.00am". Only a live fetch has them. */
+  sunrise?: string;
+  sunset?: string;
   live: boolean;
 }
 
@@ -24,6 +27,12 @@ const CODES: Array<[number[], string]> = [
   [[85, 86], "Snow showers, improbably"],
   [[95, 96, 99], "Thunderstorms"],
 ];
+
+/** "2026-10-24T17:45" to "5.45pm", the way a British paper prints the time. */
+function clock(iso: string): string {
+  const [h, m] = iso.slice(11, 16).split(":").map(Number);
+  return `${h % 12 || 12}.${String(m).padStart(2, "0")}${h < 12 ? "am" : "pm"}`;
+}
 
 function describe(code: number): string {
   return CODES.find(([codes]) => codes.includes(code))?.[1] ?? "Weather";
@@ -44,7 +53,7 @@ async function load(): Promise<Weather> {
   url.search = new URLSearchParams({
     latitude: String(lat),
     longitude: String(lon),
-    daily: "temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code",
+    daily: "temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,sunrise,sunset",
     timezone,
     forecast_days: "1",
   }).toString();
@@ -52,7 +61,7 @@ async function load(): Promise<Weather> {
     const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = (await res.json()) as {
-      daily: { temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[]; weather_code: number[] };
+      daily: { temperature_2m_max: number[]; temperature_2m_min: number[]; precipitation_probability_max: number[]; weather_code: number[]; sunrise: string[]; sunset: string[] };
     };
     const d = data.daily;
     const rain = d.precipitation_probability_max[0];
@@ -62,6 +71,8 @@ async function load(): Promise<Weather> {
       summary,
       high: `${Math.round(d.temperature_2m_max[0])}°`,
       low: `${Math.round(d.temperature_2m_min[0])}°`,
+      sunrise: clock(d.sunrise[0]),
+      sunset: clock(d.sunset[0]),
       live: true,
     };
   } catch (error) {

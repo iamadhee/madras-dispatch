@@ -91,8 +91,9 @@ const description = `${site.person.name}, software engineer in ${site.paper.city
           <JumpLine href="/opinion" page="D1" />
         </Story>
         <Story last>
-          <Box title="Weather" kind="ruled">
+          <Box title={wx.sunrise ? "Weather and almanac" : "Weather"} kind="ruled">
             <p><strong>{wx.place}.</strong> {wx.summary} High {wx.high}, low {wx.low}.</p>
+            {wx.sunrise && <p>Sun rises {wx.sunrise} over the Bay of Bengal and sets {wx.sunset}. High tide at Marina Beach is not reported; the editor checks it in person.</p>}
           </Box>
         </Story>
       </Col>
