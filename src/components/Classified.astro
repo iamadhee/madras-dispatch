@@ -28,7 +28,8 @@ const { heading, items, as: Tag = "h2" } = Astro.props;
     margin-bottom: var(--space-stack);
   }
   .notices { list-style: none; padding: 0; }
-  .notice { text-align: justify; hyphens: auto; }
+  /* Ragged right: addresses and handles cannot hyphenate, and justifying them opens wide gaps in a narrow column. */
+  .notice { text-align: start; hyphens: auto; }
   .notice + .notice { border-top: var(--rule-dashed); border-color: var(--color-rule-soft); margin-top: var(--space-inline-loose); padding-top: var(--space-inline-loose); }
   .lead { font-weight: var(--weight-headline); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
   .lead a { text-decoration: none; }
