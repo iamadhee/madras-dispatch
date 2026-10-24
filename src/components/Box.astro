@@ -8,7 +8,7 @@ interface Props {
 }
 const { title, kind = "ruled", as: Tag = "aside", titleAs: Title = "h3" } = Astro.props;
 ---
-<Tag class="box" data-kind={kind}>
+<Tag class="box" data-kind={kind} aria-label={Tag === "aside" ? title : undefined}>
   {title && <Title class="box-title label-box">{title}</Title>}
   <div class="body"><slot /></div>
 </Tag>

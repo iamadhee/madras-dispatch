@@ -39,7 +39,7 @@ const term = (e: (typeof work)[number]) => `${formatMonthYear(e.data.start)} to 
             <Content />
           </Prose>
           {entry.data.highlights.length > 0 && (
-            <Box title="Notes" kind="ruled">
+            <Box title="Notes" kind="ruled" as="div">
               <ul>{entry.data.highlights.map((h) => <li>{h}</li>)}</ul>
             </Box>
           )}

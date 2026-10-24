@@ -6,7 +6,7 @@ interface Props {
 }
 const { title, align = "left" } = Astro.props;
 ---
-<aside class="ear" data-align={align}>
+<aside class="ear" data-align={align} aria-label={title}>
   {title && <h2 class="ear-title label">{title}</h2>}
   <div class="ear-body"><slot /></div>
 </aside>
