@@ -133,6 +133,6 @@ Every picture goes through `Plate`. Sources so far: the editor's photograph, scr
 
 ## Motion and accessibility
 
-No page-load animation. Turning a page is one quick cross-fade (`--motion-fast`), done by the browser between documents; the masthead is named so it holds still, and a page is fetched when the pointer rests on its link. Links change colour on hover. Focus rings are dashed in the spot colour. `prefers-reduced-motion` turns off the transitions and the page fade. Every `aside` is named by its title.
+No page-load animation. Turning a page is one quick cross-fade (`--motion-fast`), done by the browser between documents; the masthead is named so it holds still. Links change colour on hover. Focus rings are dashed in the spot colour. `prefers-reduced-motion` turns off the transitions and the page fade. Every `aside` is named by its title.
 
 On paper the grain, the halftone and the section links go. A page break never splits a table, a picture or a box, and never leaves a heading at the foot of a page.
