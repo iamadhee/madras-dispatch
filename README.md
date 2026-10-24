@@ -36,6 +36,10 @@ Each content file has a frontmatter schema. The schemas are in `src/content.conf
 
 Read `DESIGN.md` first. The design is three layers, and `npm run check` fails the build when a layer reaches past the one beneath it. The live reference is the Style Book at `/style-book`.
 
+## Social-media preview
+
+`public/og.jpg` is a photograph of the front page. Regenerate it after a change to the masthead or the lead story: start the dev server, then run `npm run og`. The script needs Google Chrome, or a Chromium path in `OG_BROWSER`.
+
 ## Deploy to Cloudflare Pages
 
 1. Push this folder to a Git repository.
