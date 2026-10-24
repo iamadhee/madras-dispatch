@@ -39,12 +39,15 @@ export function formatLong(d: Date): string {
   }).format(d);
 }
 
+/** en-GB abbreviates September to "Sept"; every other month gets three letters, so September does too. */
+const threeLetters = (s: string) => s.replace("Sept", "Sep");
+
 export function formatShort(d: Date): string {
-  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(d);
+  return threeLetters(new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(d));
 }
 
 export function formatMonthYear(d: Date): string {
-  return new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric", timeZone: "UTC" }).format(d);
+  return threeLetters(new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric", timeZone: "UTC" }).format(d));
 }
 
 /** Whole years since the career start date. */
