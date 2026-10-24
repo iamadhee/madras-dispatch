@@ -10,6 +10,7 @@ export async function GET(context: APIContext) {
     title: site.paper.name,
     description: `${site.paper.tagline} Writing by ${site.person.name}.`,
     site: context.site!,
+    trailingSlash: false, // the site serves /opinion/x, never /opinion/x/
     items: posts.map((post) => ({
       title: post.data.headline ?? post.data.title,
       description: post.data.description,
