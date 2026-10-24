@@ -130,4 +130,7 @@ code, kbd {
   .ink-display { mask-image: none; -webkit-mask-image: none; filter: none; }
   a { text-decoration: none; }
   [data-print-hide] { display: none !important; }
+  /* A page break never splits a table, a picture or a box, and never leaves a heading at the foot of a page. */
+  table, figure, aside, blockquote { break-inside: avoid; }
+  h1, h2, h3, h4, caption { break-after: avoid; }
 }
