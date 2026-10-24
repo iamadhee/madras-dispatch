@@ -16,8 +16,10 @@ interface Props {
   /** Section slug used to mark the current section in the strip. */
   current: string;
   masthead?: "front" | "compact";
+  /** False for pages search engines must not list, such as the 404. */
+  index?: boolean;
 }
-const { title, description, current, masthead = "compact" } = Astro.props;
+const { title, description, current, masthead = "compact", index = true } = Astro.props;
 const fullTitle = current === "/" ? site.paper.name : `${title} | ${site.paper.name}`;
 // The file build format adds ".html" to the path; the host serves clean URLs, as the sitemap lists them.
 const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Astro.site);
@@ -36,7 +38,7 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Ast
     <link rel="preload" href={headlineFont} as="font" type="font/woff2" crossorigin />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {index ? <link rel="canonical" href={canonical} /> : <meta name="robots" content="noindex" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
