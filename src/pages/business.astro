@@ -23,7 +23,7 @@ const term = (e: (typeof work)[number]) => `${formatMonthYear(e.data.start)} to 
 ---
 <Section
   section="/business"
-  description={`The career of ${site.person.name}: positions held, degrees taken, and one conference talk.`}
+  description={`The career of ${site.person.name}: positions held and degrees taken.`}
   standfirst="Positions held, degrees taken, and the market's reaction to each."
 >
   <Grid>
@@ -71,10 +71,6 @@ const term = (e: (typeof work)[number]) => `${formatMonthYear(e.data.start)} to 
             ["Madras Christian College", "Bachelor of Science, Statistics", "2018 to 2021"],
           ]}
         />
-        <Box title="Speaking engagements" kind="ruled">
-          <p><strong>Getting started with FastAPI.</strong> TossConf 2023, a Software Freedom Day event by the free-software groups of Chennai. Online talk, 9 September 2023, delivered in Tamil.</p>
-          <Links items={[{ label: "Materials", href: "https://github.com/iamadhee/talks/tree/main/fast_api" }, { label: "Recording", href: "https://www.youtube.com/watch?v=qc9wpwiwmHU" }]} />
-        </Box>
         <Box title="Tools of the trade" kind="ruled">
           <p>Python, TypeScript and JavaScript. FastAPI and Flask. React and Next.js. BigQuery and MongoDB. Linux, tmux and cron, about which he has written at length.</p>
         </Box>
