@@ -8,6 +8,7 @@ import Headline from "../../components/Headline.astro";
 import Byline from "../../components/Byline.astro";
 import Prose from "../../components/Prose.astro";
 import JumpLine from "../../components/JumpLine.astro";
+import Meta from "../../components/Meta.astro";
 import { formatShort } from "../../lib/edition";
 
 export async function getStaticPaths() {
@@ -16,13 +17,15 @@ export async function getStaticPaths() {
 }
 const { post } = Astro.props;
 const { Content } = await render(post);
+// The right rail carries the latest wire stories, as a paper runs briefs beside an editorial.
+const wire = (await getCollection("posts", (p) => p.data.source !== "local")).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 3);
 ---
 <Section section="/opinion" page="D2" title={post.data.headline ?? post.data.title} description={post.data.description}>
   <Grid>
-    <Col span={1}>
+    <Col span={1} wide>
       <JumpLine href="/opinion" page="D1" direction="from" />
     </Col>
-    <Col span={4} rule>
+    <Col span={4} rule wide>
       <Story last>
         <Headline level="lead" as="h2" kicker="Editorial" deck={post.data.description}>{post.data.headline ?? post.data.title}</Headline>
         <Byline author="The Editor" date={formatShort(post.data.date)} />
@@ -30,6 +33,14 @@ const { Content } = await render(post);
           <Content />
         </Prose>
       </Story>
+    </Col>
+    <Col span={1} rule wide>
+      {wire.map((w, i) => (
+        <Story last={i === wire.length - 1}>
+          <Headline level="brief" kicker={i === 0 ? "On the wire" : undefined} href={w.data.url}>{w.data.headline ?? w.data.title}</Headline>
+          <Meta items={[formatShort(w.data.date), "Dev.to"]} />
+        </Story>
+      ))}
     </Col>
   </Grid>
 </Section>
