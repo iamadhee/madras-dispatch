@@ -1,0 +1,26 @@
+---
+/** An inner section page: compact masthead, folio, then the page body. */
+import Base from "./Base.astro";
+import Folio from "../components/Folio.astro";
+import { sectionFor } from "../site";
+
+interface Props {
+  section: string;
+  title?: string;
+  description: string;
+  standfirst?: string;
+  page?: string;
+}
+const { section, title, description, standfirst, page } = Astro.props;
+const s = sectionFor(section);
+---
+<Base title={title ?? s.name} description={description} current={s.slug} masthead="compact">
+  <div class="section">
+    <Folio section={s} standfirst={standfirst} page={page} />
+    <div class="body"><slot /></div>
+  </div>
+</Base>
+
+<style>
+  .section { display: flex; flex-direction: column; gap: var(--space-story); }
+</style>

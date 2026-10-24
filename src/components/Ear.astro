@@ -1,0 +1,27 @@
+---
+/** An "ear": the small box either side of the nameplate. */
+interface Props {
+  title?: string;
+  align?: "left" | "right";
+}
+const { title, align = "left" } = Astro.props;
+---
+<aside class="ear" data-align={align}>
+  {title && <h2 class="ear-title label">{title}</h2>}
+  <div class="ear-body"><slot /></div>
+</aside>
+
+<style>
+  .ear {
+    border: var(--rule-hairline);
+    padding: var(--space-inline-loose) var(--space-stack);
+    font-size: var(--text-small);
+    line-height: var(--leading-tight);
+    max-width: 11rem;
+  }
+  .ear[data-align="right"] { text-align: right; }
+  .ear-title {
+    margin-bottom: var(--space-inline);
+  }
+  .ear-body :global(strong) { font-weight: var(--weight-headline); }
+</style>

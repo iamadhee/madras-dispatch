@@ -1,0 +1,51 @@
+---
+/**
+ * One cell of the broadsheet grid.
+ * `span` counts desktop columns (of six). On tablet the grid has three columns and
+ * the span is halved: 1→1, 2→1, 3→3, 4→2, 5→3, 6→3. `wide` forces the full row on tablet.
+ * `rule` draws the hairline column rule on the left. A cell that fills its row
+ * draws the rule on top instead.
+ */
+interface Props {
+  span?: 1 | 2 | 3 | 4 | 5 | 6;
+  rule?: boolean;
+  wide?: boolean;
+}
+const { span = 1, rule = false, wide = false } = Astro.props;
+const tabletSpan = wide ? 3 : ({ 1: 1, 2: 1, 3: 3, 4: 2, 5: 3, 6: 3 } as const)[span];
+---
+<div class="col" style={`--span: ${span}; --span-tablet: ${tabletSpan}`} data-rule={rule ? "" : undefined} data-full={tabletSpan === 3 ? "" : undefined}>
+  <slot />
+</div>
+
+<style>
+  .col {
+    grid-column: span var(--span);
+    position: relative;
+    min-width: 0;
+  }
+  .col[data-rule]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--space-gutter) / -2);
+    border-left: var(--rule-hairline);
+  }
+  @media (max-width: 56rem) {
+    .col { grid-column: span var(--span-tablet); }
+    .col[data-rule][data-full]::before { display: none; }
+    .col[data-rule][data-full] {
+      border-top: var(--rule-hairline);
+      padding-top: var(--space-stack-loose);
+    }
+  }
+  @media (max-width: 44rem) {
+    .col { grid-column: 1 / -1; }
+    .col[data-rule]::before { display: none; }
+    .col[data-rule] {
+      border-top: var(--rule-hairline);
+      padding-top: var(--space-stack-loose);
+    }
+  }
+</style>

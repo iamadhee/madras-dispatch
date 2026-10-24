@@ -1,0 +1,35 @@
+---
+import { getCollection, render } from "astro:content";
+import Section from "../../layouts/Section.astro";
+import Grid from "../../components/Grid.astro";
+import Col from "../../components/Col.astro";
+import Story from "../../components/Story.astro";
+import Headline from "../../components/Headline.astro";
+import Byline from "../../components/Byline.astro";
+import Prose from "../../components/Prose.astro";
+import JumpLine from "../../components/JumpLine.astro";
+import { formatShort } from "../../lib/edition";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", (p) => p.data.source === "local");
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<Section section="/opinion" page="D2" title={post.data.headline ?? post.data.title} description={post.data.description}>
+  <Grid>
+    <Col span={1}>
+      <JumpLine href="/opinion" page="D1" direction="from" />
+    </Col>
+    <Col span={4} rule>
+      <Story last>
+        <Headline level="lead" as="h2" kicker="Editorial" deck={post.data.description}>{post.data.headline ?? post.data.title}</Headline>
+        <Byline author="The Editor" date={formatShort(post.data.date)} />
+        <Prose columns={2} dropcap end>
+          <Content />
+        </Prose>
+      </Story>
+    </Col>
+  </Grid>
+</Section>

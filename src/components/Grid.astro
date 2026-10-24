@@ -1,0 +1,27 @@
+---
+/**
+ * The broadsheet grid. Six columns on desktop, three on tablet, one on phones.
+ * Children must be <Col>.
+ */
+interface Props {
+  columns?: 2 | 3 | 4 | 6;
+}
+const { columns = 6 } = Astro.props;
+---
+<div class="grid" style={`--grid-columns: ${columns}`}><slot /></div>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    column-gap: var(--space-gutter);
+    row-gap: var(--space-story);
+    align-items: start;
+  }
+  @media (max-width: 56rem) {
+    .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 44rem) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

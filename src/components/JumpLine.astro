@@ -1,0 +1,24 @@
+---
+/** "Continued on Page B1". The newspaper's way of linking. */
+interface Props {
+  href: string;
+  page: string;
+  direction?: "to" | "from";
+}
+const { href, page, direction = "to" } = Astro.props;
+const label = direction === "to" ? `Continued on Page ${page}` : `Continued from Page ${page}`;
+---
+<p class="jump" data-direction={direction}><a href={href}>{label}</a></p>
+
+<style>
+  .jump {
+    font-size: var(--text-small);
+    font-style: italic;
+    color: var(--color-ink-soft);
+    text-align: right;
+  }
+  .jump[data-direction="from"] { text-align: left; }
+  .jump a { text-decoration: none; }
+  .jump a::before { content: "\2014\00a0" / ""; }
+  .jump a:hover { text-decoration: underline; }
+</style>

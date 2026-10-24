@@ -1,0 +1,73 @@
+---
+import { getCollection } from "astro:content";
+import Section from "../../layouts/Section.astro";
+import Grid from "../../components/Grid.astro";
+import Col from "../../components/Col.astro";
+import Stack from "../../components/Stack.astro";
+import Story from "../../components/Story.astro";
+import Headline from "../../components/Headline.astro";
+import Byline from "../../components/Byline.astro";
+import Meta from "../../components/Meta.astro";
+import JumpLine from "../../components/JumpLine.astro";
+import Rule from "../../components/Rule.astro";
+import Box from "../../components/Box.astro";
+import { site } from "../../site";
+import { formatShort } from "../../lib/edition";
+
+const posts = (await getCollection("posts")).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const editorials = posts.filter((p) => p.data.source === "local");
+const wire = posts.filter((p) => p.data.source === "devto");
+const per = Math.ceil(wire.length / 3);
+const columns = [0, 1, 2].map((c) => wire.slice(c * per, (c + 1) * per));
+const yearOf = (d: Date) => String(d.getUTCFullYear());
+const marker = (post: (typeof wire)[number]) => {
+  const i = wire.indexOf(post);
+  return i === 0 || yearOf(wire[i - 1].data.date) !== yearOf(post.data.date) ? yearOf(post.data.date) : undefined;
+};
+---
+<Section
+  section="/opinion"
+  description={`Writing by ${site.person.name}: editorials from this paper and ${wire.length} articles syndicated from Dev.to.`}
+  standfirst="Editorials from this desk, and articles filed to Dev.to since 2022."
+>
+  <Stack gap="story">
+    <Grid>
+      {editorials.map((post, i) => (
+        <Col span={4} rule={i > 0}>
+          <Story last>
+            <Headline level="lead" as="h2" kicker="Editorial" deck={post.data.description} href={`/opinion/${post.id}`}>
+              {post.data.headline ?? post.data.title}
+            </Headline>
+            <Byline author="The Editor" date={formatShort(post.data.date)} />
+            <JumpLine href={`/opinion/${post.id}`} page="D2" />
+          </Story>
+        </Col>
+      ))}
+      <Col span={2} rule>
+        <Box title="Letters policy" kind="ruled">
+          <p>This page carries two kinds of writing. Editorials are written for this paper and printed in full. Wire stories are articles the editor published on Dev.to, and are linked to the original, where the comments also live.</p>
+          <p>Letters are welcome. Use the coupon on page F1.</p>
+        </Box>
+      </Col>
+    </Grid>
+
+    <Rule kind="heavy" space="none" />
+
+    <Headline level="secondary" as="h2" align="center" deck={`${wire.length} articles, most recent first.`}>On the wire from Dev.to</Headline>
+
+    <Grid>
+      {columns.map((col, c) => (
+        <Col span={2} rule={c > 0}>
+          {col.map((post, i) => (
+            <Story last={i === col.length - 1}>
+              <Headline level="brief" kicker={marker(post)} deck={post.data.description} href={post.data.url}>
+                {post.data.headline ?? post.data.title}
+              </Headline>
+              <Meta items={[formatShort(post.data.date), post.data.readingTime ? `${post.data.readingTime} min` : undefined, post.data.tags.join(", ")]} />
+            </Story>
+          ))}
+        </Col>
+      ))}
+    </Grid>
+  </Stack>
+</Section>

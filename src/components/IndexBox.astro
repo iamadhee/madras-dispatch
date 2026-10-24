@@ -1,0 +1,37 @@
+---
+/** The "Inside" box: every section with its page letter, on dotted leaders. */
+import { site } from "../site";
+
+interface Props {
+  title?: string;
+  items?: ReadonlyArray<{ name: string; page: string; slug: string }>;
+}
+const { title = "Inside", items = site.sections.filter((s) => s.slug !== "/") } = Astro.props;
+---
+<nav class="index" aria-label={title}>
+  <h3 class="index-title label-box">{title}</h3>
+  <ol class="list">
+    {items.map((item) => (
+      <li class="row">
+        <a href={item.slug}>{item.name}</a>
+        <span class="leader" aria-hidden="true"></span>
+        <span class="page">{item.page}</span>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .index { border: var(--rule-hairline); border-top: var(--rule-heavy); padding: var(--space-stack-loose); }
+  .index-title {
+    border-bottom: var(--rule-hairline);
+    padding-bottom: var(--space-inline-loose);
+    margin-bottom: var(--space-stack);
+  }
+  .list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-inline); }
+  .row { display: flex; align-items: baseline; gap: var(--space-inline-loose); font-size: var(--text-compact); }
+  .row a { text-decoration: none; font-weight: var(--weight-emphasis); }
+  .row a:hover { text-decoration: underline; }
+  .leader { flex: 1; border-bottom: var(--rule-dashed); transform: translateY(-0.3em); }
+  .page { font-family: var(--font-headline); font-weight: var(--weight-headline); font-variant-numeric: tabular-nums; }
+</style>

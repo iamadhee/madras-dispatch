@@ -1,0 +1,31 @@
+---
+/** "By NAME, Role" with an optional date. Sits between a headline and its story. */
+interface Props {
+  author: string;
+  role?: string;
+  date?: string;
+  align?: "left" | "center";
+}
+const { author, role, date, align = "left" } = Astro.props;
+---
+<p class="byline" data-align={align}>
+  <span class="who">By <span class="author label-inline">{author}</span>{role && <span class="role">, {role}</span>}</span>
+  {date && <time class="date">{date}</time>}
+</p>
+
+<style>
+  .byline {
+    font-size: var(--text-small);
+    line-height: var(--leading-tight);
+    color: var(--color-ink-soft);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-inline) var(--space-inline-loose);
+    align-items: baseline;
+  }
+  .byline[data-align="center"] { justify-content: center; }
+  .author { color: var(--color-ink); }
+  .role { font-style: italic; }
+  .date { margin-left: auto; font-variant-numeric: tabular-nums; }
+  .byline[data-align="center"] .date { margin-left: 0; }
+</style>

@@ -1,0 +1,150 @@
+/*
+ * Layer 2 — Semantic tokens.
+ * Every value here is a role, mapped to a primitive. No raw values.
+ * Components read ONLY these. Pages read nothing; they compose components.
+ */
+:root {
+  /* Surfaces */
+  --color-paper: var(--primitive-newsprint-200);
+  --color-paper-raised: var(--primitive-newsprint-50);
+  --color-paper-tint: var(--primitive-newsprint-300);
+  --color-paper-deep: var(--primitive-newsprint-400);
+
+  /* Ink */
+  --color-ink: var(--primitive-ink-900);
+  --color-ink-soft: var(--primitive-ink-700);
+  --color-ink-muted: var(--primitive-ink-500);
+  --color-ink-faint: var(--primitive-ink-300);
+
+  /* Rules */
+  --color-rule: var(--primitive-ink-900);
+  --color-rule-soft: var(--primitive-ink-200);
+
+  /* Spot colour */
+  --color-stamp: var(--primitive-red-600);
+  --color-stamp-deep: var(--primitive-red-700);
+  --color-on-stamp: var(--primitive-newsprint-50);
+
+  /* Interaction */
+  --color-link: var(--primitive-ink-900);
+  --color-link-hover: var(--primitive-red-600);
+  --color-focus: var(--primitive-red-600);
+  --color-selection: var(--primitive-newsprint-400);
+
+  /* Type roles */
+  --font-text: var(--primitive-family-text);
+  --font-headline: var(--primitive-family-headline);
+  --font-nameplate: var(--primitive-family-blackletter);
+
+  --text-fine: var(--primitive-size-100);       /* credits, folio detail */
+  --text-small: var(--primitive-size-200);      /* captions, meta, nav */
+  --text-compact: var(--primitive-size-300);    /* briefs, boxed text */
+  --text-body: var(--primitive-size-400);
+  --text-deck: var(--primitive-size-500);
+  --text-pullquote: var(--primitive-size-600);
+  --text-headline-brief: var(--primitive-size-500);
+  --text-headline-secondary: var(--primitive-size-700);
+  --text-headline-lead: var(--primitive-size-900);
+  --text-headline-banner: var(--primitive-size-1000);
+  --text-nameplate: var(--primitive-size-1100);
+  --text-section-name: var(--primitive-size-800);
+
+  --leading-headline: var(--primitive-leading-250);
+  --leading-deck: var(--primitive-leading-350);
+  --leading-tight: var(--primitive-leading-300);
+  --leading-body: var(--primitive-leading-400);
+  --leading-loose: var(--primitive-leading-500);
+  --leading-solid: var(--primitive-leading-100);
+
+  --weight-text: var(--primitive-weight-400);
+  --weight-emphasis: var(--primitive-weight-500);
+  --weight-headline: var(--primitive-weight-700);
+
+  --tracking-headline: var(--primitive-tracking-tight);
+  --tracking-text: var(--primitive-tracking-normal);
+  --tracking-caps: var(--primitive-tracking-wide);
+  --tracking-caps-wide: var(--primitive-tracking-wider);
+
+  /* Space roles */
+  --space-hair: var(--primitive-space-50);
+  --space-inline: var(--primitive-space-100);
+  --space-inline-loose: var(--primitive-space-200);
+  --space-stack: var(--primitive-space-300);        /* between paragraphs */
+  --space-stack-loose: var(--primitive-space-400);  /* between blocks */
+  --space-gutter: var(--primitive-space-500);       /* between columns */
+  --space-story: var(--primitive-space-600);        /* between stories */
+  --space-section: var(--primitive-space-700);      /* between page regions */
+  --space-page-top: var(--primitive-space-600);
+  --space-page-edge: var(--primitive-space-400);
+  --space-page-bottom: var(--primitive-space-900);
+
+  /* Rules */
+  --rule-hairline: var(--primitive-stroke-100) solid var(--color-rule);
+  --rule-hairline-soft: var(--primitive-stroke-100) solid var(--color-rule-soft);
+  --rule-medium: var(--primitive-stroke-200) solid var(--color-rule);
+  --rule-heavy: var(--primitive-stroke-300) solid var(--color-rule);
+  --rule-double: var(--primitive-stroke-400) double var(--color-rule);
+  --rule-dashed: var(--primitive-stroke-100) dashed var(--color-rule);
+  --rule-stamp: var(--primitive-stroke-200) solid var(--color-stamp);
+
+  /* Measure and layout */
+  --width-page: var(--primitive-width-page);
+  --measure-body: var(--primitive-width-measure);
+  --measure-narrow: var(--primitive-width-measure-narrow);
+  --measure-column: var(--primitive-width-measure-column);   /* narrowest a text column may be */
+
+  /* Texture and photographs */
+  --opacity-grain: var(--primitive-opacity-grain);
+  --opacity-mottle: var(--primitive-opacity-mottle);
+  --texture-grain: var(--primitive-texture-grain);
+  --texture-fibre: var(--primitive-texture-fibre);
+  --texture-mottle: var(--primitive-texture-mottle);
+  --texture-ink: var(--primitive-texture-ink);       /* uneven coverage, as a mask on display type */
+  --filter-ink: var(--primitive-filter-bleed);        /* ragged edges on display type */
+  --ink-spread: var(--primitive-stroke-50);           /* dot gain: every letter spreads a hair into the paper */
+  --opacity-halftone: var(--primitive-opacity-halftone);
+  --color-photo-plate: var(--primitive-ink-900);
+  --color-halftone: var(--primitive-ink-900);
+  --blend-photo: var(--primitive-blend-screen);
+  --blend-grain: var(--primitive-blend-multiply);
+  --blend-stamp: var(--primitive-blend-multiply);
+
+  /* Motion and stacking */
+  --motion-fast: var(--primitive-duration-fast);
+  --motion-slow: var(--primitive-duration-slow);
+  --layer-overlay: var(--primitive-z-100);
+  --layer-skip-link: var(--primitive-z-200);
+}
+
+/* The evening edition. Same roles, night paper, light ink. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: var(--primitive-night-900);
+    --color-paper-raised: var(--primitive-night-800);
+    --color-paper-tint: var(--primitive-night-700);
+    --color-paper-deep: var(--primitive-night-600);
+
+    --color-ink: var(--primitive-newsprint-200);
+    --color-ink-soft: var(--primitive-newsprint-400);
+    --color-ink-muted: var(--primitive-ink-300);
+    --color-ink-faint: var(--primitive-ink-500);
+
+    --color-rule: var(--primitive-newsprint-200);
+    --color-rule-soft: var(--primitive-night-600);
+
+    --color-stamp: var(--primitive-red-400);
+    --color-stamp-deep: var(--primitive-red-600);
+    --color-on-stamp: var(--primitive-night-900);
+
+    --color-link: var(--primitive-newsprint-200);
+    --color-link-hover: var(--primitive-red-400);
+    --color-focus: var(--primitive-red-400);
+    --color-selection: var(--primitive-night-600);
+
+    --color-photo-plate: var(--primitive-night-900);
+    --color-halftone: var(--primitive-night-900);
+    --blend-photo: var(--primitive-blend-normal);
+    --blend-grain: var(--primitive-blend-screen);
+    --blend-stamp: var(--primitive-blend-normal);
+  }
+}

@@ -1,0 +1,36 @@
+---
+/** A quotation lifted from the story and set large between two rules. */
+interface Props {
+  cite?: string;
+}
+const { cite } = Astro.props;
+---
+<blockquote class="pull">
+  <p class="quote ink-display"><span class="mark" aria-hidden="true">“</span><span class="text"><slot /></span><span class="mark" aria-hidden="true">”</span></p>
+  {cite && <footer class="cite">{cite}</footer>}
+</blockquote>
+
+<style>
+  .pull {
+    border-top: var(--rule-heavy);
+    border-bottom: var(--rule-hairline);
+    padding: var(--space-stack-loose) 0;
+    text-align: center;
+  }
+  .quote {
+    font-family: var(--font-headline);
+    font-size: var(--text-pullquote);
+    font-weight: var(--weight-headline);
+    line-height: var(--leading-tight);
+    text-wrap: balance;
+    hanging-punctuation: first;
+  }
+  .text { white-space: normal; }
+  .text::before, .text::after { content: ""; }
+  .cite {
+    margin-top: var(--space-stack);
+    font-size: var(--text-small);
+    font-style: italic;
+    color: var(--color-ink-soft);
+  }
+</style>

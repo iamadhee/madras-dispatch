@@ -1,0 +1,17 @@
+---
+/** Vertical rhythm. Children are spaced by one named gap. */
+interface Props {
+  gap?: "stack" | "loose" | "story" | "section";
+  as?: "div" | "section" | "article" | "header";
+}
+const { gap = "loose", as: Tag = "div" } = Astro.props;
+---
+<Tag class="stack" data-gap={gap}><slot /></Tag>
+
+<style>
+  .stack { display: flex; flex-direction: column; }
+  .stack[data-gap="stack"] { gap: var(--space-stack); }
+  .stack[data-gap="loose"] { gap: var(--space-stack-loose); }
+  .stack[data-gap="story"] { gap: var(--space-story); }
+  .stack[data-gap="section"] { gap: var(--space-section); }
+</style>

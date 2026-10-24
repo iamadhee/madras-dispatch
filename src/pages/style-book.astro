@@ -1,0 +1,239 @@
+---
+import Section from "../layouts/Section.astro";
+import Grid from "../components/Grid.astro";
+import Col from "../components/Col.astro";
+import Stack from "../components/Stack.astro";
+import Headline from "../components/Headline.astro";
+import Byline from "../components/Byline.astro";
+import Prose from "../components/Prose.astro";
+import PullQuote from "../components/PullQuote.astro";
+import Box from "../components/Box.astro";
+import Rule from "../components/Rule.astro";
+import JumpLine from "../components/JumpLine.astro";
+import Meta from "../components/Meta.astro";
+import Stamp from "../components/Stamp.astro";
+import Ledger from "../components/Ledger.astro";
+import Classified from "../components/Classified.astro";
+import IndexBox from "../components/IndexBox.astro";
+import Ear from "../components/Ear.astro";
+import Links from "../components/Links.astro";
+import Coupon from "../components/Coupon.astro";
+import Swatch from "../components/stylebook/Swatch.astro";
+import Specimen from "../components/stylebook/Specimen.astro";
+import Spec from "../components/stylebook/Spec.astro";
+import Advert from "../components/Advert.astro";
+import { site } from "../site";
+import Figure from "../components/Figure.astro";
+import PrintLink from "../components/PrintLink.astro";
+import fort from "../assets/archive/fort-st-george-1850s.jpg";
+
+const colours = [
+  ["--color-paper", "The sheet. Default background."],
+  ["--color-paper-raised", "A lighter sheet, for coupons and cut-outs."],
+  ["--color-paper-tint", "Tinted boxes and code."],
+  ["--color-paper-deep", "Selection highlight."],
+  ["--color-ink", "Text, rules, headlines."],
+  ["--color-ink-soft", "Decks, bylines, captions."],
+  ["--color-ink-muted", "Meta lines, credits."],
+  ["--color-ink-faint", "Separators inside meta lines."],
+  ["--color-rule-soft", "Rules that should not compete with ink rules."],
+  ["--color-stamp", "The spot colour. Stamps, link hover, focus."],
+  ["--color-photo-plate", "Behind every plate. Ink by day, night paper by night."],
+] as const;
+
+const type = [
+  ["--text-nameplate", "--font-nameplate", "Nameplate only", "The Madras Dispatch"],
+  ["--text-headline-banner", "--font-headline", "Banner, one per front page", "Engineer found"],
+  ["--text-headline-lead", "--font-headline", "Lead story on a section page", "Lead headline"],
+  ["--text-headline-secondary", "--font-headline", "Stories sharing a page", "Secondary headline"],
+  ["--text-headline-brief", "--font-headline", "Briefs and teasers", "Brief headline"],
+  ["--text-section-name", "--font-headline", "Section nameplate on the folio", "Business"],
+  ["--text-pullquote", "--font-headline", "Pull quotes", "Lifted from the story"],
+  ["--text-deck", "--font-text", "Decks under lead headlines", "The deck explains the headline in one sentence."],
+  ["--text-body", "--font-text", "Body copy", "Body copy is justified, hyphenated, and indented."],
+  ["--text-compact", "--font-text", "Boxed text, briefs, ledgers", "Compact text inside boxes and tables."],
+  ["--text-small", "--font-text", "Captions, bylines, meta, nav", "Caption and byline size."],
+  ["--text-fine", "--font-text", "Credits, folio detail", "Photograph: supplied"],
+] as const;
+---
+<Section
+  section="/style-book"
+  description="The design system behind this paper: three layers, the palette, the type scale, and every component with its rule of use."
+  standfirst="How this paper is set, and the rules the build enforces."
+>
+  <Stack gap="section">
+    <Grid>
+      <Col span={4}>
+        <Stack gap="loose">
+          <Headline level="lead" as="h2" deck="Every newspaper keeps a style book. This one is enforced by a script.">The Three Layers</Headline>
+          <Prose columns={2}>
+            <p>The design is built in layers, and each layer may read only the one beneath it. Primitives hold raw values. Semantic tokens give those values a role. Components read the roles. Pages compose components and carry no styling of their own.</p>
+            <p>The check runs before every build and fails it on any breach: a component that reaches for a primitive, a page with a style block, a raw colour anywhere above the primitive layer. The rules are listed in the ledger on this page.</p>
+            <p>The evening edition is the same set of roles with night paper and light ink. It follows the reader's system setting. No component knows which edition it is printed in.</p>
+          </Prose>
+        </Stack>
+      </Col>
+      <Col span={2} rule>
+        <Ledger
+          caption="Rules of the house"
+          columns={["Layer", "May read", "May not"]}
+          rows={[
+            ["Primitives", "Nothing", "Other tokens"],
+            ["Semantic", "Primitives", "Raw values"],
+            ["Base, components, layouts", "Semantic tokens", "Primitives, raw colours"],
+            ["Pages", "Components", "Tokens, style blocks"],
+          ]}
+        />
+      </Col>
+    </Grid>
+
+    <Rule kind="double" space="none" />
+
+    <Stack gap="loose">
+      <Headline level="secondary" as="h2" deck="Newsprint, ink, and one spot colour. No cream, no pure black.">Palette</Headline>
+      <Grid columns={6}>
+        {colours.map(([token, role]) => (
+          <Col span={1}><Swatch token={token} role={role} /></Col>
+        ))}
+      </Grid>
+    </Stack>
+
+    <Rule kind="double" space="none" />
+
+    <Stack gap="loose">
+      <Headline level="secondary" as="h2" deck="Three faces. Base 17 pixels, ratio 1.2, optical sizes on.">Type</Headline>
+      <Grid>
+        <Col span={4}>
+          <Stack gap="loose">
+            {type.map(([token, font, role, sample]) => (
+              <Specimen token={token} font={font} role={role} sample={sample} />
+            ))}
+          </Stack>
+        </Col>
+        <Col span={2} rule>
+          <Box title="Faces" kind="ruled">
+            <p><strong>UnifrakturMaguntia.</strong> The nameplate, and nothing else.</p>
+            <p><strong>Old Standard.</strong> Headlines, kickers, section names, ledger headings. Bold for headlines.</p>
+            <p><strong>Newsreader.</strong> Everything you read. Variable, with an optical-size axis.</p>
+          </Box>
+        </Col>
+      </Grid>
+    </Stack>
+
+    <Rule kind="double" space="none" />
+
+    <Stack gap="loose">
+      <Headline level="secondary" as="h2" deck="Lines carry structure. Whitespace is for margins.">Rules</Headline>
+      <Grid columns={3}>
+        <Col span={1}><Meta items={["hairline"]} /><Rule kind="hairline" /></Col>
+        <Col span={1}><Meta items={["soft"]} /><Rule kind="soft" /></Col>
+        <Col span={1}><Meta items={["medium"]} /><Rule kind="medium" /></Col>
+        <Col span={1}><Meta items={["heavy"]} /><Rule kind="heavy" /></Col>
+        <Col span={1}><Meta items={["double"]} /><Rule kind="double" /></Col>
+        <Col span={1}><Meta items={["ornament"]} /><Rule kind="ornament" /></Col>
+      </Grid>
+    </Stack>
+
+    <Rule kind="double" space="none" />
+
+    <Stack gap="story">
+      <Headline level="secondary" as="h2" deck="Each part of the paper, with its rule of use.">Components</Headline>
+
+      <Grid>
+        <Col span={3}>
+          <Spec name="Headline" rule="Four levels. One banner per front page. Decks are one sentence, italic. Kickers only when the section is not obvious.">
+            <Stack gap="loose">
+              <Headline level="lead" as="h4" kicker="Kicker" deck="A deck under a lead headline.">Lead Headline</Headline>
+              <Headline level="secondary" as="h4" deck="A deck under a secondary.">Secondary Headline</Headline>
+              <Headline level="brief" as="h4" deck="A deck under a brief.">Brief Headline</Headline>
+            </Stack>
+          </Spec>
+        </Col>
+        <Col span={3} rule>
+          <Spec name="Byline and Meta" rule="A byline names the writer. A meta line lists facts. Neither is decoration.">
+            <Stack gap="stack">
+              <Byline author="Adheeban Manoharan" role="Staff Correspondent" date="24 Oct 2026" />
+              <Meta items={["2026", "Live", "Python, ntfy"]} />
+            </Stack>
+          </Spec>
+        </Col>
+      </Grid>
+
+      <Grid>
+        <Col span={3}>
+          <Spec name="Prose" rule="Justified, hyphenated, paragraphs indented. A dateline opens the first paragraph. A drop cap is for stories without a dateline.">
+            <Prose dateline="Chennai" size="compact">
+              <p>A paragraph with a dateline. It is justified and hyphenated, and the next paragraph is indented rather than spaced.</p>
+              <p>The second paragraph shows the indent. Columns are set with the columns prop and collapse on small screens.</p>
+            </Prose>
+          </Spec>
+        </Col>
+        <Col span={3} rule>
+          <Spec name="Pull quote" rule="Set between a heavy rule and a hairline. Quote the subject, not the paper.">
+            <PullQuote cite="The subject, Dev.to, 2022">Your first job will scare you.</PullQuote>
+          </Spec>
+        </Col>
+      </Grid>
+
+      <Grid>
+        <Col span={2}>
+          <Spec name="Box" rule="Ruled for facts, tinted for asides, dashed for cut-outs.">
+            <Stack gap="stack">
+              <Box title="Ruled" kind="ruled"><p>Notes and highlights.</p></Box>
+              <Box title="Tinted" kind="tinted"><p>An aside.</p></Box>
+              <Box title="Dashed" kind="dashed"><p>Cut this out.</p></Box>
+            </Stack>
+          </Spec>
+        </Col>
+        <Col span={2} rule>
+          <Spec name="Index box and Ear" rule="The index box lists the sections. Ears sit either side of the nameplate and hold the weather and the price.">
+            <Stack gap="stack">
+              <IndexBox />
+              <Ear title="Weather, Chennai"><p><strong>31°</strong> / 26°</p></Ear>
+            </Stack>
+          </Spec>
+        </Col>
+        <Col span={2} rule>
+          <Spec name="Jump line, Links, Stamp" rule="A jump line is the only way to continue a story. Links point outside the paper. The stamp is the one red thing on a page.">
+            <Stack gap="stack">
+              <JumpLine href="/" page="A1" />
+              <JumpLine href="/" page="A1" direction="from" />
+              <Links items={[{ label: "Repository", href: "https://github.com/iamadhee" }, { label: "Site", href: "https://adheeban.com" }]} />
+              <p><Stamp text="Late edition" /></p>
+              <p><PrintLink /></p>
+            </Stack>
+          </Spec>
+        </Col>
+      </Grid>
+
+      <Grid>
+        <Col span={3}>
+          <Spec name="Plate and Figure" rule="Every picture is a plate: screened to ink on paper, halftoned, and bled into colour when the pointer rests on it. A figure adds the caption and the credit. The credit is mandatory. The mug variant floats a small portrait into the text.">
+            <Figure src={fort} alt="Fort St George, Madras, in the 1850s" width={588} height={445} caption="A plate with its caption. Rest the pointer on it." credit="Steel engraving, 1850s" />
+          </Spec>
+        </Col>
+        <Col span={3} rule>
+          <Spec name="Advert and Daily Five" rule="A display advertisement: double-ruled frame, every line centred, the whole notice one link. Only for the other titles from this press, and only on the Advertisements page. The Daily Five is the word game on the Puzzles page: ink for the right place, the spot red for the wrong place, grey for absent.">
+            <Advert name={site.sites[0].name} tagline={site.sites[0].tagline} host={site.sites[0].host} url={site.sites[0].url} status={site.sites[0].status} image={site.sites[0].image} />
+          </Spec>
+        </Col>
+      </Grid>
+
+      <Grid>
+        <Col span={3}>
+          <Spec name="Ledger" rule="A ruled table for anything with columns: jobs, degrees, counts.">
+            <Ledger caption="Example" columns={["Item", "Count"]} rows={[["Posts", "21"], ["Talks", "1"]]} />
+          </Spec>
+        </Col>
+        <Col span={3} rule>
+          <Spec name="Classified and Coupon" rule="Classifieds are dense and capitalised at the lead. The coupon is how readers write in.">
+            <Stack gap="loose">
+              <Classified as="h4" heading="Wanted" items={[{ lead: "Collaborators", text: "For open-source work. Must tolerate justified text." }]} />
+              <Coupon title="Clip and send"><p>Dear Editor, I would like to <span class="blank"></span>.</p></Coupon>
+            </Stack>
+          </Spec>
+        </Col>
+      </Grid>
+    </Stack>
+  </Stack>
+</Section>

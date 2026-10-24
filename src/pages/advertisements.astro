@@ -1,0 +1,52 @@
+---
+import Section from "../layouts/Section.astro";
+import Grid from "../components/Grid.astro";
+import Col from "../components/Col.astro";
+import Stack from "../components/Stack.astro";
+import Advert from "../components/Advert.astro";
+import Box from "../components/Box.astro";
+import Ledger from "../components/Ledger.astro";
+import Rule from "../components/Rule.astro";
+import { site } from "../site";
+
+const names = site.sites.map((s) => s.name);
+const description = `Display notices for the other titles from this press: ${names.join(", ")}. All built and paid for by ${site.person.name}.`;
+---
+<Section
+  section="/advertisements"
+  description={description}
+  standfirst="Display notices for the other titles from this press. Each one runs on a server the editor pays for, so each one is still open."
+>
+  <Stack gap="story">
+    <Grid>
+      {site.sites.map((s, i) => (
+        <Col span={2} rule={i > 0}>
+          <Advert name={s.name} tagline={s.tagline} host={s.host} url={s.url} status={s.status} image={s.image} />
+        </Col>
+      ))}
+    </Grid>
+
+    <Rule kind="heavy" space="none" />
+
+    <Grid>
+      <Col span={4}>
+        <Ledger
+          caption="Advertising rates"
+          columns={["Space", "Rate"]}
+          rows={[
+            ["Front page", "Not for sale"],
+            ["Display notice, per column inch", "One pull request, reviewed"],
+            ["Classified, per line", "A kind word"],
+            ["Masthead ear", "Reserved for the weather"],
+          ]}
+        />
+      </Col>
+      <Col span={2} rule>
+        <Box title="Terms of business" kind="tinted">
+          <p>This paper carries advertisements only for things the editor built himself. That keeps the rates fair and the arguments short.</p>
+          <p>Every title above opens in the same browser tab. Use the back button to return to the paper. Enquiries to the Classifieds, page F1.</p>
+        </Box>
+      </Col>
+    </Grid>
+  </Stack>
+</Section>

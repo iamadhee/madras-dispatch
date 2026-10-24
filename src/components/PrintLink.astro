@@ -1,0 +1,23 @@
+---
+/** "Print this edition". A text button that opens the print dialog. Hidden when printing. */
+---
+<button class="print" type="button" data-print data-print-hide>Print this edition</button>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-print]").forEach((b) => b.addEventListener("click", () => window.print()));
+</script>
+
+<style>
+  .print {
+    font: inherit;
+    color: var(--color-link);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.14em;
+  }
+  .print:hover { color: var(--color-link-hover); }
+</style>

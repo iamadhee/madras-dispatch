@@ -1,0 +1,76 @@
+---
+/**
+ * Headline with optional kicker and deck.
+ * Levels follow the page hierarchy of a broadsheet:
+ *  banner    the one headline across the whole front page
+ *  lead      the main story on a section page
+ *  secondary a story that shares the page
+ *  brief     a short item or teaser
+ */
+interface Props {
+  level: "banner" | "lead" | "secondary" | "brief";
+  as?: "h1" | "h2" | "h3" | "h4";
+  kicker?: string;
+  deck?: string;
+  align?: "left" | "center";
+  href?: string;
+}
+const defaults = { banner: "h1", lead: "h1", secondary: "h2", brief: "h3" } as const;
+const { level, as, kicker, deck, align = level === "banner" ? "center" : "left", href } = Astro.props;
+const Tag = as ?? defaults[level];
+---
+<header class="headline" data-level={level} data-align={align}>
+  {kicker && <p class="kicker label-inline">{kicker}</p>}
+  <Tag class:list={["title", level !== "brief" && "ink-display"]}>{href ? <a href={href}><slot /></a> : <slot />}</Tag>
+  {deck && <p class="deck">{deck}</p>}
+</header>
+
+<style>
+  .headline { display: flex; flex-direction: column; gap: var(--space-stack); }
+  .headline[data-align="center"] { text-align: center; align-items: center; }
+
+  .kicker { color: var(--color-ink-soft); }
+  .headline[data-align="left"] .kicker {
+    border-bottom: var(--rule-hairline);
+    align-self: flex-start;
+    padding-bottom: var(--space-hair);
+  }
+
+  .title {
+    font-family: var(--font-headline);
+    font-weight: var(--weight-headline);
+    line-height: var(--leading-headline);
+    letter-spacing: var(--tracking-headline);
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+  .title a { text-decoration: none; }
+  .title a:hover { text-decoration: underline; text-decoration-thickness: 0.06em; text-underline-offset: 0.1em; }
+
+  .headline[data-level="banner"] .title {
+    font-size: var(--text-headline-banner);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-text);
+    max-width: min(32ch, 100%);
+  }
+  .headline[data-level="lead"] .title { font-size: var(--text-headline-lead); }
+  .headline[data-level="secondary"] .title { font-size: var(--text-headline-secondary); }
+  .headline[data-level="brief"] .title { font-size: var(--text-headline-brief); }
+
+  .deck {
+    font-family: var(--font-text);
+    font-style: italic;
+    color: var(--color-ink-soft);
+    line-height: var(--leading-deck);
+    text-wrap: pretty;
+  }
+  .headline[data-level="banner"] .deck,
+  .headline[data-level="lead"] .deck { font-size: var(--text-deck); max-width: min(var(--measure-body), 100%); }
+  .headline[data-level="secondary"] .deck { font-size: var(--text-body); }
+  .headline[data-level="brief"] .deck { font-size: var(--text-compact); }
+
+  /* On a tablet a column is a third of the page, so a secondary headline drops one size. */
+  @media (min-width: 44.01rem) and (max-width: 56rem) {
+    .headline[data-level="secondary"] .title { font-size: var(--text-headline-brief); }
+  }
+</style>

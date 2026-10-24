@@ -1,0 +1,129 @@
+/*
+ * Layer 3 — Base. Element defaults and the paper itself.
+ * Reads semantic tokens only.
+ */
+@import "@fontsource-variable/newsreader/opsz.css";
+@import "@fontsource-variable/newsreader/opsz-italic.css";
+@import "@fontsource/old-standard-tt/400.css";
+@import "@fontsource/old-standard-tt/400-italic.css";
+@import "@fontsource/old-standard-tt/700.css";
+@import "@fontsource/unifrakturmaguntia/400.css";
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  color-scheme: light dark;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-text);
+  font-size: 100%;
+  font-optical-sizing: auto;
+  line-height: var(--leading-body);
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+  hanging-punctuation: first last;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--color-paper);
+  font-size: var(--text-body);
+  position: relative;
+}
+
+/* The paper. Two fixed overlays for the whole sheet: grain and fibre on top, the cloudiness of the stock beneath. */
+body::before, body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--layer-overlay);
+  mix-blend-mode: var(--blend-grain);
+}
+body::before {
+  opacity: var(--opacity-grain);
+  background-image: var(--texture-grain), var(--texture-fibre);
+}
+body::after {
+  opacity: var(--opacity-mottle);
+  background-image: var(--texture-mottle);
+}
+
+/* The ink. Every letter spreads a hair into the paper. */
+body { text-shadow: 0 0 var(--ink-spread); }
+
+h1, h2, h3, h4, p, figure, blockquote, ul, ol, dl, table { margin: 0; }
+
+a {
+  color: var(--color-link);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.14em;
+  transition: color var(--motion-fast) ease;
+}
+a:hover { color: var(--color-link-hover); }
+
+:focus-visible {
+  outline: var(--rule-dashed);
+  outline-color: var(--color-focus);
+  outline-offset: 0.15em;
+}
+
+::selection { background: var(--color-selection); color: var(--color-ink); }
+
+img { display: block; max-width: 100%; height: auto; }
+
+strong { font-weight: var(--weight-emphasis); }
+em { font-style: italic; }
+abbr[title] { text-decoration: none; }
+
+code, kbd {
+  font-family: var(--font-text);
+  font-variant-numeric: tabular-nums;
+  background: var(--color-paper-tint);
+  padding: 0 var(--space-inline);
+}
+
+/*
+ * Label roles. Three ways the paper sets small capitals.
+ * Components add layout and colour; they never restate these properties.
+ *   .label        edge and strip labels, table heads, credits, folio lines
+ *   .label-box    the centred title of a boxed component
+ *   .label-inline kickers, bylines, the section strip
+ */
+.label, .label-box, .label-inline {
+  font-family: var(--font-headline);
+  font-weight: var(--weight-headline);
+  text-transform: uppercase;
+}
+.label { font-size: var(--text-fine); letter-spacing: var(--tracking-caps-wide); }
+.label-box { font-size: var(--text-small); letter-spacing: var(--tracking-caps-wide); text-align: center; }
+.label-inline { font-size: var(--text-small); letter-spacing: var(--tracking-caps); }
+
+/*
+ * Display type takes the press: the mask gives uneven ink coverage, the filter ragged edges.
+ * Only for type set large. Small text stays crisp.
+ */
+.ink-display {
+  -webkit-mask-image: var(--texture-ink);
+  mask-image: var(--texture-ink);
+  -webkit-mask-position: var(--ink-offset, 0 0);
+  mask-position: var(--ink-offset, 0 0);   /* set per element by the press, so no two headlines ink alike */
+  filter: var(--filter-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation: none !important; }
+}
+
+@media print {
+  @page { margin: 1.5cm; }
+  body::before, body::after { display: none; }
+  body { text-shadow: none; }
+  .ink-display { mask-image: none; -webkit-mask-image: none; filter: none; }
+  a { text-decoration: none; }
+  [data-print-hide] { display: none !important; }
+}

@@ -1,0 +1,115 @@
+---
+/**
+ * The sheet of paper. Head, masthead, page body, colophon.
+ */
+import "../styles/index.css";
+import { site } from "../site";
+import Masthead from "../components/Masthead.astro";
+import Colophon from "../components/Colophon.astro";
+import textFont from "@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url";
+import textItalic from "@fontsource-variable/newsreader/files/newsreader-latin-opsz-italic.woff2?url";
+import headlineFont from "@fontsource/old-standard-tt/files/old-standard-tt-latin-700-normal.woff2?url";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Section slug used to mark the current section in the strip. */
+  current: string;
+  masthead?: "front" | "compact";
+}
+const { title, description, current, masthead = "compact" } = Astro.props;
+const fullTitle = current === "/" ? site.paper.name : `${title} | ${site.paper.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href={textFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={textItalic} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={headlineFont} as="font" type="font/woff2" crossorigin />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.paper.name} wire`} href="/rss.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.paper.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL("/og.jpg", Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`Front page of ${site.paper.name}`} />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL("/og.jpg", Astro.site)} />
+    <meta name="twitter:creator" content={`@${site.social.x.handle}`} />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <svg class="press" aria-hidden="true" focusable="false">
+      <filter id="ink-bleed" x="-2%" y="-6%" width="104%" height="112%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="1" seed="5" result="grit" />
+        <feDisplacementMap in="SourceGraphic" in2="grit" scale="1.2" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+    <script is:inline>
+      // The press. Every impression is different: re-seed the paper and ink textures and the edge filter before the sheet paints.
+      (() => {
+        const root = document.documentElement;
+        const styles = getComputedStyle(root);
+        const seed = () => String(1 + Math.floor(Math.random() * 9000));
+        for (const role of ["--texture-grain", "--texture-fibre", "--texture-mottle", "--texture-ink"]) {
+          const value = styles.getPropertyValue(role);
+          if (value) root.style.setProperty(role, value.replace(/seed='\d+'/, `seed='${seed()}'`));
+        }
+        document.querySelector("#ink-bleed feTurbulence")?.setAttribute("seed", seed());
+      })();
+    </script>
+    <a class="skip" href="#page" data-print-hide>Skip to the stories</a>
+    <div class="sheet">
+      <Masthead variant={masthead} current={current} />
+      <main id="page" class="page"><slot /></main>
+      <Colophon />
+    </div>
+  </body>
+</html>
+
+<script>
+  // Each piece of display type takes the ink mask at its own offset, and each stamp lands at its own tilt.
+  for (const el of document.querySelectorAll<HTMLElement>(".ink-display")) {
+    el.style.setProperty("--ink-offset", `${Math.floor(Math.random() * 360)}px ${Math.floor(Math.random() * 360)}px`);
+  }
+  for (const el of document.querySelectorAll<HTMLElement>(".stamp[data-tilt]")) {
+    el.style.setProperty("--stamp-tilt", `${(-7 + Math.random() * 4).toFixed(1)}deg`);
+  }
+</script>
+
+<style>
+  .sheet {
+    max-width: var(--width-page);
+    margin-inline: auto;
+    padding: var(--space-page-top) var(--space-page-edge) var(--space-page-bottom);
+  }
+  .page { padding-top: var(--space-story); }
+  .press { position: absolute; width: 0; height: 0; overflow: hidden; }
+  .skip {
+    position: absolute;
+    left: var(--space-page-edge);
+    top: calc(-1 * var(--space-section));
+    z-index: var(--layer-skip-link);
+    background: var(--color-ink);
+    color: var(--color-paper);
+    padding: var(--space-inline-loose) var(--space-stack);
+    text-decoration: none;
+  }
+  .skip:focus { top: var(--space-page-edge); }
+</style>

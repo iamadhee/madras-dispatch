@@ -1,0 +1,32 @@
+---
+import Base from "../layouts/Base.astro";
+import Grid from "../components/Grid.astro";
+import Col from "../components/Col.astro";
+import Story from "../components/Story.astro";
+import Headline from "../components/Headline.astro";
+import Prose from "../components/Prose.astro";
+import Box from "../components/Box.astro";
+import JumpLine from "../components/JumpLine.astro";
+import Stamp from "../components/Stamp.astro";
+import { site } from "../site";
+---
+<Base title="Page not found" description="This page is not in this edition." current="/404">
+  <Grid>
+    <Col span={1}></Col>
+    <Col span={4} rule>
+      <Story last>
+        <p><Stamp text="Returned to sender" /></p>
+        <Headline level="lead" kicker="Corrections and clarifications" deck="An earlier edition referred readers to a page at this address. No such page was printed.">
+          Page Not Found; Paper Regrets the Error
+        </Headline>
+        <Prose dateline={site.paper.city}>
+          <p>The page you asked for is not in this edition, and as far as the records desk can establish, was never in any edition. If a link brought you here, the editor would like to know where it was.</p>
+        </Prose>
+        <Box title="Where to go instead" kind="ruled" titleAs="h2">
+          <p>The front page is on A1. Business, Technology and Opinion follow. Puzzles are on E1. Correspondence is taken on F1.</p>
+        </Box>
+        <JumpLine href="/" page="A1" />
+      </Story>
+    </Col>
+  </Grid>
+</Base>

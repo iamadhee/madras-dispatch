@@ -1,0 +1,18 @@
+---
+/** "See: Repository, Site". Small related links under a story. */
+interface Props {
+  items: ReadonlyArray<{ label: string; href: string }>;
+  lead?: string;
+}
+const { items, lead = "See" } = Astro.props;
+---
+<p class="links">
+  <span class="lead">{lead}:</span>
+  {items.map((item) => <a href={item.href} rel={item.href.startsWith("http") ? "external" : undefined}>{item.label}</a>)}
+</p>
+
+<style>
+  .links { font-size: var(--text-small); display: flex; flex-wrap: wrap; gap: var(--space-inline-loose); color: var(--color-ink-soft); }
+  .lead { font-style: italic; }
+  .links a + a::before { content: ","; margin-left: calc(-1 * var(--space-inline-loose)); margin-right: var(--space-inline-loose); color: var(--color-ink-muted); }
+</style>

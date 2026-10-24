@@ -1,0 +1,137 @@
+---
+/**
+ * The nameplate and everything around it: ears, edition line, section strip.
+ * `front` prints the full masthead. `compact` prints the inner-page version.
+ */
+import { site } from "../site";
+import { edition } from "../lib/edition";
+import { weather } from "../lib/weather";
+import Ear from "./Ear.astro";
+import Nav from "./Nav.astro";
+import Stamp from "./Stamp.astro";
+
+interface Props {
+  variant?: "front" | "compact";
+  current: string;
+}
+const { variant = "front", current } = Astro.props;
+const ed = edition();
+const wx = await weather();
+---
+<header class="masthead" data-variant={variant}>
+  {variant === "front" ? (
+    <div class="plate">
+      <div class="ear-left">
+        <Ear title={`Weather, ${wx.place}`}>
+          <p><strong>{wx.high}</strong> / {wx.low}</p>
+          <p>{wx.summary}</p>
+        </Ear>
+      </div>
+      <div class="name">
+        <p class="nameplate ink-display"><a href="/">{site.paper.name}</a></p>
+        <p class="tagline">{site.paper.tagline}</p>
+      </div>
+      <div class="ear-right">
+        <Ear title="Price" align="right">
+          <p><strong>Free</strong>, online edition</p>
+          <p><Stamp text="Late edition" /></p>
+        </Ear>
+      </div>
+    </div>
+  ) : (
+    <div class="plate-compact">
+      <p class="nameplate-compact"><a href="/">{site.paper.name}</a></p>
+    </div>
+  )}
+
+  <p class="edition label" data-first-year={site.paper.firstVolumeYear}>
+    <span class="vol">Vol. <span data-edition-volume>{ed.volume}</span>, No. <span data-edition-number>{ed.number}</span></span>
+    <span class="date"><span class="city">{site.paper.city}</span>, <time data-edition-date datetime={ed.iso}>{ed.date}</time></span>
+    <span class="price">Established {site.paper.firstVolumeYear}</span>
+  </p>
+
+  <Nav current={current} />
+</header>
+
+<script>
+  // Keep the dateline on today's date, even on a cached build.
+  const line = document.querySelector<HTMLElement>(".edition[data-first-year]");
+  if (line) {
+    const now = new Date();
+    const firstYear = Number(line.dataset.firstYear);
+    const volume = now.getFullYear() - firstYear + 1;
+    const start = Date.UTC(now.getFullYear(), 0, 0);
+    const number = Math.floor((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - start) / 86_400_000);
+    const roman = (n: number) => {
+      const map: Array<[number, string]> = [[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+      let out = ""; let rest = n;
+      for (const [v, g] of map) { while (rest >= v) { out += g; rest -= v; } }
+      return out;
+    };
+    const date = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(now);
+    line.querySelector("[data-edition-volume]")!.textContent = roman(Math.max(volume, 1));
+    line.querySelector("[data-edition-number]")!.textContent = String(number);
+    const time = line.querySelector<HTMLTimeElement>("[data-edition-date]")!;
+    time.textContent = date;
+    time.dateTime = now.toISOString().slice(0, 10);
+  }
+</script>
+
+<style>
+  .masthead { display: flex; flex-direction: column; }
+
+  .plate {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: end;
+    gap: var(--space-gutter);
+    padding-bottom: var(--space-stack);
+    border-bottom: var(--rule-double);
+  }
+  .ear-left { justify-self: start; }
+  .ear-right { justify-self: end; }
+  .name { text-align: center; min-width: 0; }
+  .nameplate {
+    font-family: var(--font-nameplate);
+    font-size: var(--text-nameplate);
+    line-height: var(--leading-solid);
+    letter-spacing: var(--tracking-text);
+    white-space: nowrap;
+  }
+  .nameplate a, .nameplate-compact a { text-decoration: none; color: var(--color-ink); }
+  .tagline {
+    margin-top: var(--space-stack);
+    font-style: italic;
+    font-size: var(--text-compact);
+    color: var(--color-ink-soft);
+  }
+
+  .plate-compact {
+    text-align: center;
+    padding-bottom: var(--space-inline-loose);
+    border-bottom: var(--rule-double);
+  }
+  .nameplate-compact {
+    font-family: var(--font-nameplate);
+    font-size: var(--text-headline-lead);
+    line-height: var(--leading-solid);
+  }
+
+  .edition {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-gutter);
+    padding: var(--space-inline) 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .edition .date { text-align: center; }
+  .edition .price { text-align: right; }
+
+  @media (max-width: 56rem) {
+    .plate { grid-template-columns: minmax(0, 1fr); justify-items: stretch; }
+    .ear-left, .ear-right { display: none; }
+    .nameplate { white-space: normal; }
+    .edition { flex-direction: column; align-items: center; gap: var(--space-hair); text-align: center; }
+    .edition .price { display: none; }
+  }
+</style>

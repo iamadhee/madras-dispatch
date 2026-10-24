@@ -1,0 +1,15 @@
+---
+/** One story on a page. Ends with a hairline unless it is the last on its column. */
+interface Props {
+  last?: boolean;
+  id?: string;
+}
+const { last = false, id } = Astro.props;
+---
+<article class="story" data-last={last ? "" : undefined} id={id}><slot /></article>
+
+<style>
+  .story { display: flex; flex-direction: column; gap: var(--space-stack-loose); scroll-margin-top: var(--space-section); }
+  .story:not([data-last]) { padding-bottom: var(--space-stack-loose); border-bottom: var(--rule-hairline); }
+  .story + .story { padding-top: var(--space-stack-loose); }
+</style>

@@ -1,0 +1,23 @@
+---
+/** A type specimen: one role of the scale, set in its own token. */
+interface Props {
+  token: string;
+  font?: string;
+  role: string;
+  sample?: string;
+  uppercase?: boolean;
+}
+const { token, font = "--font-text", role, sample = "The quick brown fox jumps over the lazy dog", uppercase = false } = Astro.props;
+---
+<div class="specimen">
+  <p class="sample" style={`font-size: var(${token}); font-family: var(${font}); text-transform: ${uppercase ? "uppercase" : "none"}`}>{sample}</p>
+  <p class="label"><span class="token">{token}</span> <span class="role">{role}</span></p>
+</div>
+
+<style>
+  .specimen { display: flex; flex-direction: column; gap: var(--space-inline-loose); padding-bottom: var(--space-stack); border-bottom: var(--rule-hairline-soft); }
+  .sample { line-height: var(--leading-tight); overflow-wrap: anywhere; }
+  .label { font-size: var(--text-small); display: flex; gap: var(--space-inline-loose); flex-wrap: wrap; }
+  .token { font-weight: var(--weight-emphasis); }
+  .role { color: var(--color-ink-muted); }
+</style>

@@ -1,0 +1,84 @@
+---
+import { getCollection, render } from "astro:content";
+import Section from "../layouts/Section.astro";
+import Grid from "../components/Grid.astro";
+import Col from "../components/Col.astro";
+import Stack from "../components/Stack.astro";
+import Story from "../components/Story.astro";
+import Headline from "../components/Headline.astro";
+import Byline from "../components/Byline.astro";
+import Meta from "../components/Meta.astro";
+import Prose from "../components/Prose.astro";
+import Box from "../components/Box.astro";
+import Ledger from "../components/Ledger.astro";
+import Links from "../components/Links.astro";
+import { site } from "../site";
+import { formatMonthYear } from "../lib/edition";
+import Figure from "../components/Figure.astro";
+import fort from "../assets/archive/fort-st-george-1850s.jpg";
+
+const work = (await getCollection("work")).sort((a, b) => b.data.start.getTime() - a.data.start.getTime());
+const stories = await Promise.all(work.map(async (entry) => ({ entry, Content: (await render(entry)).Content })));
+const term = (e: (typeof work)[number]) => `${formatMonthYear(e.data.start)} to ${e.data.end ? formatMonthYear(e.data.end) : "present"}`;
+---
+<Section
+  section="/business"
+  description={`The career of ${site.person.name}: positions held, degrees taken, and one conference talk.`}
+  standfirst="Positions held, degrees taken, and the market's reaction to each."
+>
+  <Grid>
+    <Col span={4}>
+      {stories.map(({ entry, Content }, i) => (
+        <Story id={entry.id} last={i === stories.length - 1}>
+          <Headline level={i === 0 ? "lead" : "secondary"} as={i === 0 ? "h2" : "h2"} kicker={entry.data.company} deck={entry.data.deck}>
+            {entry.data.headline}
+          </Headline>
+          <Byline author="Business Desk" date={term(entry)} />
+          <Meta items={[entry.data.role, entry.data.location]} />
+          <Prose columns={2} dropcap end>
+            <Content />
+          </Prose>
+          {entry.data.highlights.length > 0 && (
+            <Box title="Notes" kind="ruled">
+              <ul>{entry.data.highlights.map((h) => <li>{h}</li>)}</ul>
+            </Box>
+          )}
+          {entry.data.companyUrl && <Links items={[{ label: entry.data.company, href: entry.data.companyUrl }]} />}
+        </Story>
+      ))}
+    </Col>
+
+    <Col span={2} rule>
+      <Stack gap="story">
+        <Figure
+          src={fort}
+          alt="Steel engraving of Fort St George, Madras, seen from the beach with boats and surf in the 1850s"
+          width={588}
+          height={445}
+          caption="Fort St George, Madras, in the 1850s. The East India Company kept its ledgers here. This page keeps the editor's."
+          credit="Steel engraving, 1850s. Public domain"
+        />
+        <Ledger
+          caption="Positions held"
+          columns={["Company", "Position", "Term"]}
+          rows={work.map((e) => [e.data.company, e.data.role, term(e)])}
+        />
+        <Ledger
+          caption="Degrees"
+          columns={["Institution", "Degree", "Years"]}
+          rows={[
+            ["University of Madras", "Master of Computer Applications", "2023 to 2024"],
+            ["Madras Christian College", "Bachelor of Science, Statistics", "2018 to 2021"],
+          ]}
+        />
+        <Box title="Speaking engagements" kind="ruled">
+          <p><strong>Getting started with FastAPI.</strong> TossConf 2023, a Software Freedom Day event by the free-software groups of Chennai. Online talk, 9 September 2023, delivered in Tamil.</p>
+          <Links items={[{ label: "Materials", href: "https://github.com/iamadhee/talks/tree/main/fast_api" }, { label: "Recording", href: "https://www.youtube.com/watch?v=qc9wpwiwmHU" }]} />
+        </Box>
+        <Box title="Tools of the trade" kind="ruled">
+          <p>Python, TypeScript and JavaScript. FastAPI and Flask. React and Next.js. BigQuery and MongoDB. Linux, tmux and cron, about which he has written at length.</p>
+        </Box>
+      </Stack>
+    </Col>
+  </Grid>
+</Section>

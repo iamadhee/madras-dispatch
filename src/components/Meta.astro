@@ -1,0 +1,26 @@
+---
+/** A line of small facts, separated by thin bars. */
+interface Props {
+  items: ReadonlyArray<string | undefined | null | false>;
+  align?: "left" | "center" | "right";
+}
+const { items, align = "left" } = Astro.props;
+const shown = items.filter((i): i is string => typeof i === "string" && i.length > 0);
+---
+<p class="meta" data-align={align}>
+  {shown.map((item) => <span class="item">{item}</span>)}
+</p>
+
+<style>
+  .meta {
+    font-size: var(--text-small);
+    line-height: var(--leading-tight);
+    color: var(--color-ink-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-inline);
+  }
+  .meta[data-align="center"] { justify-content: center; }
+  .meta[data-align="right"] { justify-content: flex-end; }
+  .item + .item::before { content: "|" / ""; margin-right: var(--space-inline); color: var(--color-ink-faint); }
+</style>

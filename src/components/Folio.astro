@@ -1,0 +1,67 @@
+---
+/**
+ * Inner-page header: running folio (section | paper | date, page) then the section nameplate.
+ */
+import { site, type Section } from "../site";
+import { edition } from "../lib/edition";
+
+interface Props {
+  section: Section;
+  title?: string;
+  standfirst?: string;
+  /** Folio page label. Defaults to the section's first page. */
+  page?: string;
+}
+const { section, title = section.name, standfirst, page = section.page } = Astro.props;
+const ed = edition();
+---
+<div class="folio">
+  <p class="running label">
+    <span class="running-section">{section.name}</span>
+    <span class="running-paper">{site.paper.name}</span>
+    <span class="running-page"><span class="running-date">{ed.date}</span> <span class="page">Page {page}</span></span>
+  </p>
+  <header class="plate">
+    <h1 class="section-name ink-display">{title}</h1>
+    {standfirst && <p class="standfirst">{standfirst}</p>}
+  </header>
+</div>
+
+<style>
+  .folio { display: flex; flex-direction: column; gap: var(--space-stack-loose); }
+  .running {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-gutter);
+    border-bottom: var(--rule-hairline);
+    padding-bottom: var(--space-inline);
+    color: var(--color-ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .running-paper { font-family: var(--font-nameplate); font-weight: var(--weight-text); text-transform: none; letter-spacing: var(--tracking-text); font-size: var(--text-compact); color: var(--color-ink); }
+  .page { color: var(--color-ink); margin-left: var(--space-inline-loose); }
+
+  .plate { text-align: center; border-bottom: var(--rule-double); padding-bottom: var(--space-stack-loose); }
+  .section-name {
+    font-family: var(--font-headline);
+    font-size: var(--text-section-name);
+    font-weight: var(--weight-headline);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps-wide);
+    line-height: var(--leading-headline);
+  }
+  .standfirst {
+    margin-top: var(--space-inline-loose);
+    font-style: italic;
+    color: var(--color-ink-soft);
+    text-wrap: balance;
+    max-width: var(--measure-body);
+    margin-inline: auto;
+  }
+  @media (max-width: 44rem) {
+    .running-paper, .running-date { display: none; }
+    .page { margin-left: 0; }
+    /* A long section name must still fit one phone column. */
+    .section-name { font-size: var(--text-headline-secondary); letter-spacing: var(--tracking-caps); }
+  }
+</style>

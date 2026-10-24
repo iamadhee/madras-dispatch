@@ -1,0 +1,77 @@
+---
+import Section from "../layouts/Section.astro";
+import Grid from "../components/Grid.astro";
+import Col from "../components/Col.astro";
+import Stack from "../components/Stack.astro";
+import Classified from "../components/Classified.astro";
+import Coupon from "../components/Coupon.astro";
+import { site } from "../site";
+
+const socials = Object.values(site.social);
+const letter = `mailto:${site.person.email}?subject=${encodeURIComponent("Letter to the Editor")}&body=${encodeURIComponent(
+  "Dear Editor,\n\nI read your paper and I would like to ____.\n\nI am writing from ____, and my name is ____.\n",
+)}`;
+---
+<Section
+  section="/classifieds"
+  description={`How to reach ${site.person.name}: email, GitHub, LinkedIn, Dev.to, and a coupon.`}
+  standfirst="Correspondence, situations, notices and one coupon. Rates on application."
+>
+  <Grid columns={3}>
+    <Col span={1}>
+      <Stack gap="story">
+        <Classified
+          heading="Correspondence"
+          items={[
+            { lead: "Email", text: `${site.person.email}. Read daily. Answered eventually.`, href: `mailto:${site.person.email}` },
+            ...socials.map((s) => ({ lead: s.label, text: `${s.handle}. ${s.label === "GitHub" ? "Issues and pull requests welcome." : s.label === "LinkedIn" ? "For professional correspondence." : s.label === "Dev.to" ? "Where the wire stories are filed." : s.label === "X" ? "Posts are rare." : "Keeps the presses running."}`, href: s.url })),
+          ]}
+        />
+        <Classified
+          heading="Situations filled"
+          items={[
+            { lead: "Software Engineer", text: `${site.person.employer}, ${site.paper.city}. Backend. Taken since December 2023. Applicants need not apply, but may write to say hello.` },
+          ]}
+        />
+      </Stack>
+    </Col>
+
+    <Col span={1}>
+      <Stack gap="story">
+        <Classified
+          heading="Wanted"
+          items={[
+            { lead: "Collaborators", text: "For open-source work in Python or TypeScript. Must tolerate justified text." },
+            { lead: "Corrections", text: "To any story in this paper. The editor is also the subject, so errors are personal." },
+            { lead: "Recommendations", text: "Books worth their weight in a backpack, and places worth the flight. Watches, within reason." },
+          ]}
+        />
+        <Classified
+          heading="For sale or free"
+          items={[
+            { lead: "Portfolio template", text: "Navigator. Cartographic theme, compass rose, working terminal. Open source, one careful owner.", href: "https://github.com/iamadhee/navigator" },
+            { lead: "Robot influencer", text: "LLM Influencer. Generates podcasts. 39 stars. Has not posted lately.", href: "https://github.com/iamadhee/llm-influencer" },
+          ]}
+        />
+      </Stack>
+    </Col>
+
+    <Col span={1}>
+      <Stack gap="story">
+      <Coupon title="Clip and send">
+        <p>Dear Editor,</p>
+        <p>I read your paper and I would like to <span class="blank"></span>.</p>
+        <p>I am writing from <span class="blank"></span>, and my name is <span class="blank"></span>.</p>
+        <p>Post this coupon to <a href={letter}>{site.person.email}</a>, or hand it to the editor on <a href={site.social.linkedin.url}>LinkedIn</a>.</p>
+      </Coupon>
+        <Classified
+          heading="Public notices"
+          items={[
+            { lead: "Price alerts", text: "Two monitors watch the price of wristwatches on the editor's behalf. Readers with a Casio at 60 per cent off are asked to come forward." },
+            { lead: "Talk", text: "Getting started with FastAPI, in Tamil, was given at TossConf 2023 and remains available on request." },
+          ]}
+        />
+      </Stack>
+    </Col>
+  </Grid>
+</Section>

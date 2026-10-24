@@ -1,0 +1,20 @@
+---
+/** A colour chip showing a semantic token and its role. */
+interface Props {
+  token: string;
+  role: string;
+}
+const { token, role } = Astro.props;
+---
+<div class="swatch">
+  <div class="chip" style={`background: var(${token})`}></div>
+  <p class="token">{token}</p>
+  <p class="role">{role}</p>
+</div>
+
+<style>
+  .swatch { font-size: var(--text-small); line-height: var(--leading-tight); }
+  .chip { height: 3.5rem; border: var(--rule-hairline); margin-bottom: var(--space-inline-loose); }
+  .token { font-weight: var(--weight-emphasis); }
+  .role { color: var(--color-ink-muted); }
+</style>

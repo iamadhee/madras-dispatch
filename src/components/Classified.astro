@@ -1,0 +1,36 @@
+---
+/** One classified column: a heading and a run of dense small notices. */
+interface Props {
+  heading: string;
+  items: ReadonlyArray<{ lead: string; text: string; href?: string }>;
+  as?: "h2" | "h3" | "h4";
+}
+const { heading, items, as: Tag = "h2" } = Astro.props;
+---
+<section class="classified">
+  <Tag class="heading label-box">{heading}</Tag>
+  <ul class="notices">
+    {items.map((item) => (
+      <li class="notice">
+        <span class="lead">{item.href ? <a href={item.href}>{item.lead}</a> : item.lead}.</span>
+        {" "}{item.text}
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .classified { font-size: var(--text-small); line-height: var(--leading-tight); }
+  .heading {
+    border-top: var(--rule-heavy);
+    border-bottom: var(--rule-hairline);
+    padding: var(--space-inline) 0;
+    margin-bottom: var(--space-stack);
+  }
+  .notices { list-style: none; padding: 0; }
+  .notice { text-align: justify; hyphens: auto; }
+  .notice + .notice { border-top: var(--rule-dashed); border-color: var(--color-rule-soft); margin-top: var(--space-inline-loose); padding-top: var(--space-inline-loose); }
+  .lead { font-weight: var(--weight-headline); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
+  .lead a { text-decoration: none; }
+  .lead a:hover { text-decoration: underline; }
+</style>

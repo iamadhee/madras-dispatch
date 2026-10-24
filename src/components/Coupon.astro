@@ -1,0 +1,42 @@
+---
+/** A clip-out coupon. Dashed border, scissors, and whatever the reader is asked to send. */
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<aside class="coupon">
+  <span class="scissors" aria-hidden="true">✂</span>
+  <h3 class="title label-box">{title}</h3>
+  <div class="body"><slot /></div>
+</aside>
+
+<style>
+  .coupon {
+    position: relative;
+    border: var(--rule-dashed);
+    padding: var(--space-story) var(--space-stack-loose) var(--space-stack-loose);
+    background: var(--color-paper-raised);
+  }
+  .scissors {
+    position: absolute;
+    top: calc(-1 * var(--space-stack));
+    left: var(--space-stack-loose);
+    background: var(--color-paper);
+    padding: 0 var(--space-inline);
+    font-size: var(--text-deck);
+    line-height: var(--leading-solid);
+    transform: rotate(90deg);
+    color: var(--color-ink-soft);
+  }
+  .title {
+    margin-bottom: var(--space-stack);
+  }
+  .body { font-size: var(--text-compact); line-height: var(--leading-body); }
+  .body > :global(* + *) { margin-top: var(--space-stack); }
+  .body :global(.blank) {
+    display: inline-block;
+    min-width: 9rem;
+    border-bottom: var(--rule-hairline);
+  }
+</style>

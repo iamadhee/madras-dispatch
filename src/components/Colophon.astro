@@ -1,0 +1,86 @@
+---
+/** The foot of the paper: ownership, sections, where to write. */
+import { site } from "../site";
+import PrintLink from "./PrintLink.astro";
+
+const year = new Date().getUTCFullYear();
+const socials = Object.values(site.social);
+---
+<footer class="colophon">
+  <div class="columns">
+    <section class="col">
+      <h2 class="heading label">Ownership</h2>
+      <p>{site.paper.name} is written, edited, typeset and published by {site.paper.publisher} in {site.paper.city}. No wire service was harmed. All stories concern one person, who is also the editor, which keeps the corrections page short.</p>
+    </section>
+    <section class="col">
+      <h2 class="heading label">Sections</h2>
+      <ul class="list">
+        {site.sections.map((s) => <li><a href={s.slug}>{s.name}</a> <span class="page">{s.page}</span></li>)}
+      </ul>
+    </section>
+    <section class="col">
+      <h2 class="heading label">Other titles</h2>
+      <ul class="list">
+        {site.sites.map((s) => <li><a href={s.url}>{s.name}</a> <span class="page">{s.host}</span></li>)}
+      </ul>
+    </section>
+    <section class="col">
+      <h2 class="heading label">Correspondence</h2>
+      <ul class="list">
+        {socials.map((s) => <li><a href={s.url} rel="me">{s.label}</a> <span class="page">{s.handle}</span></li>)}
+        <li><a href={`mailto:${site.person.email}`}>Email</a> <span class="page">{site.person.email}</span></li>
+      </ul>
+    </section>
+  </div>
+  <p class="imprint">
+    <span>© {year} {site.paper.publisher}. Set in Newsreader and Old Standard. Printed on Cloudflare Pages. <PrintLink /> <a href="/rss.xml">Wire feed</a>.</span>
+    <span class="barcode" aria-hidden="true"></span>
+  </p>
+</footer>
+
+<style>
+  .colophon {
+    margin-top: var(--space-section);
+    border-top: var(--rule-double);
+    padding-top: var(--space-stack-loose);
+    font-size: var(--text-small);
+    line-height: var(--leading-tight);
+    color: var(--color-ink-soft);
+  }
+  .columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--space-gutter);
+  }
+  .col + .col { border-left: var(--rule-hairline); padding-left: var(--space-gutter); }
+  .heading {
+    color: var(--color-ink);
+    margin-bottom: var(--space-inline-loose);
+  }
+  .list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-inline); }
+  .list a { text-decoration: none; color: var(--color-ink); }
+  .list a:hover { text-decoration: underline; }
+  .page { color: var(--color-ink-muted); font-size: var(--text-fine); }
+  .imprint {
+    margin-top: var(--space-story);
+    border-top: var(--rule-hairline);
+    padding-top: var(--space-stack);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-gutter);
+    font-size: var(--text-fine);
+  }
+  .barcode {
+    flex-shrink: 0;
+    width: 7rem;
+    height: 1.6rem;
+    background:
+      repeating-linear-gradient(90deg, var(--color-ink) 0 2px, transparent 2px 5px, var(--color-ink) 5px 6px, transparent 6px 9px, var(--color-ink) 9px 12px, transparent 12px 14px, var(--color-ink) 14px 15px, transparent 15px 19px);
+  }
+  @media (max-width: 56rem) {
+    .columns { grid-template-columns: 1fr; }
+    .col + .col { border-left: 0; padding-left: 0; border-top: var(--rule-hairline); padding-top: var(--space-stack-loose); }
+  }
+  @media print { .barcode { display: none; } }
+</style>

@@ -1,0 +1,39 @@
+---
+import Section from "../layouts/Section.astro";
+import Grid from "../components/Grid.astro";
+import Col from "../components/Col.astro";
+import Stack from "../components/Stack.astro";
+import Box from "../components/Box.astro";
+import DailyWord from "../components/DailyWord.astro";
+import { site } from "../site";
+---
+<Section
+  section="/puzzles"
+  description="The Daily Five: one five-letter word a day, six guesses, the same word for every reader. Streaks are kept in your browser."
+  standfirst="One word a day. Six tries. The same word for every reader, until midnight."
+>
+  <Grid>
+    <Col span={4}>
+      <DailyWord epoch={site.puzzles.epoch} shareUrl={`${site.paper.url}/puzzles`} paperName={site.paper.name} />
+    </Col>
+    <Col span={2} rule>
+      <Stack gap="story">
+        <Box title="How to play" kind="ruled">
+          <p>Type a five-letter word and press Enter. Each letter is then printed one of three ways.</p>
+          <ul>
+            <li><strong>Solid ink.</strong> Right letter, right place.</li>
+            <li><strong>Red.</strong> Right letter, wrong place.</li>
+            <li><strong>Grey.</strong> Not in the word.</li>
+          </ul>
+          <p>You have six tries. A new word is set at midnight, your time.</p>
+        </Box>
+        <Box title="House rules" kind="tinted">
+          <p>Every reader gets the same word on the same day, so compare grids, not answers. Guesses must be real words. Your record stays in this browser and is never sent anywhere, including to the editor.</p>
+        </Box>
+        <Box title="Where the words come from" kind="ruled">
+          <p>Answers are common English words. Guesses are checked against a public-domain dictionary of about 8,500 five-letter words. If a word you know is refused, write in on the coupon, page F1.</p>
+        </Box>
+      </Stack>
+    </Col>
+  </Grid>
+</Section>

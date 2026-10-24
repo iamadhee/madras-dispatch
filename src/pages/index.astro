@@ -1,0 +1,189 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import Grid from "../components/Grid.astro";
+import Col from "../components/Col.astro";
+import Stack from "../components/Stack.astro";
+import Story from "../components/Story.astro";
+import Headline from "../components/Headline.astro";
+import Byline from "../components/Byline.astro";
+import Prose from "../components/Prose.astro";
+import Figure from "../components/Figure.astro";
+import PullQuote from "../components/PullQuote.astro";
+import Box from "../components/Box.astro";
+import Ledger from "../components/Ledger.astro";
+import JumpLine from "../components/JumpLine.astro";
+import IndexBox from "../components/IndexBox.astro";
+import Meta from "../components/Meta.astro";
+import Rule from "../components/Rule.astro";
+import Classified from "../components/Classified.astro";
+import { site } from "../site";
+import { yearsSince, formatShort, formatMonthYear } from "../lib/edition";
+import photo from "../assets/adheeban.jpg";
+import harbour from "../assets/archive/madras-harbour-1880.jpg";
+import { weather } from "../lib/weather";
+import { stars } from "../lib/github";
+
+const work = (await getCollection("work")).sort((a, b) => b.data.start.getTime() - a.data.start.getTime());
+const currentJob = work[0];
+const projects = (await getCollection("projects")).filter((p) => p.data.featured).sort((a, b) => b.data.year - a.data.year);
+const posts = (await getCollection("posts")).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const wirePost = posts.find((p) => p.data.source === "devto")!;
+const editorsNote = posts.find((p) => p.data.source === "local")!;
+const years = yearsSince(site.person.careerStart);
+const wx = await weather();
+const starCounts = await Promise.all(projects.map((p) => stars(p.data.repo, p.data.stars)));
+const influencerStars = (await stars("https://github.com/iamadhee/llm-influencer", 39)) ?? 39;
+const description = `${site.person.name}, software engineer in ${site.paper.city}. ${years} years from a statistics degree to backend systems, reported as a daily newspaper.`;
+---
+<Base title="Front Page" description={description} current="/" masthead="front">
+  <Stack gap="loose">
+    <Headline
+      level="banner"
+      deck={`Adheeban Manoharan came to software from a statistics degree with no plan and a lot of questions. ${years} years on, the questions are blog posts, the plan is still loose, and the code ships.`}
+    >
+      Man Learns Software in Public, Keeps Every Note
+    </Headline>
+
+    <Grid>
+      <Col span={4}>
+        <Story last>
+          <Byline author={site.person.name} role="Staff Correspondent" />
+          <Prose dateline={site.paper.city} columns={2}>
+            <Figure
+              src={photo}
+              alt={`${site.person.name}, leaning on a ship's railing with the sea behind him`}
+              width={640}
+              height={800}
+              position="attention"
+              caption="The editor at sea off the coast of Vietnam. Someone else held the camera."
+              credit="Photograph: supplied"
+              loading="eager"
+            />
+            <p>In November 2020 a final-year statistics student at Madras Christian College took an internship at a software company and did not tell anyone how little of it he understood. {years} years later Adheeban Manoharan builds backend systems at {site.person.employer}, and has written down most of what he learned on the way, in case the next person is as lost as he was.</p>
+            <p>The habit started early. His first posts on Dev.to, in 2022, were not tutorials. One was titled "Your first job will scare you", and it was written by someone whose first job was scaring him. Fifty readers pressed the button that means thank you.</p>
+            <p>The tutorials came after: cron, tmux, MongoDB, Linux. Then a run of posts in 2023 on language models, written while the rest of the industry was still deciding what to think, the most read of which taught a chatbot to answer questions about your own files. Late that year he went back to fundamentals and wrote a series on linked lists and sorting, because a statistics degree had skipped them and he did not want to be the only one who noticed.</p>
+            <p>He gave his one conference talk in Tamil, at a Software Freedom Day event run by the free-software groups of Chennai. It is still on YouTube. Three of his side projects concern wristwatches, one of them a program that waits for a sale so that he does not have to.</p>
+            <p>This edition is the record. It is written by its subject, who admits the conflict of interest, and published in the hope that someone starting out reads it and feels less alone.</p>
+          </Prose>
+          <JumpLine href="/business" page="B1" />
+        </Story>
+      </Col>
+
+      <Col span={2} rule>
+        <Story>
+          <Headline level="secondary" kicker="Business" deck={currentJob.data.deck}>{currentJob.data.headline}</Headline>
+          <Meta items={[currentJob.data.role, currentJob.data.company, `Since ${formatMonthYear(currentJob.data.start)}`]} />
+          <JumpLine href={`/business#${currentJob.id}`} page="B1" />
+        </Story>
+        <Story>
+          <Headline level="brief" deck="Kissflow FlowForge AI hackathon, 2025. The team's name proved inaccurate.">
+            "404 – Agent Not Found" Team Found; Takes First Prize
+          </Headline>
+          <JumpLine href={`/business#${currentJob.id}`} page="B1" />
+        </Story>
+        <Story>
+          <Headline level="brief" kicker="On the wire" deck={wirePost.data.description} href={wirePost.data.url}>
+            {wirePost.data.headline}
+          </Headline>
+          <Meta items={[formatShort(wirePost.data.date), "Dev.to", wirePost.data.readingTime ? `${wirePost.data.readingTime} min` : undefined]} />
+          <JumpLine href="/opinion" page="D1" />
+        </Story>
+        <Story last>
+          <Box title="Weather" kind="ruled">
+            <p><strong>{wx.place}.</strong> {wx.summary} High {wx.high}, low {wx.low}.</p>
+          </Box>
+        </Story>
+      </Col>
+    </Grid>
+
+    <Rule kind="heavy" space="none" />
+
+    <Grid>
+      <Col span={2}>
+        <Stack gap="loose">
+          <IndexBox />
+          <Ledger
+            caption="By the numbers"
+            columns={["Figure", "Count"]}
+            rows={[
+              ["Years in backend work", String(years)],
+              ["Posts published", String(posts.length)],
+              ["Stars, robot influencer", String(influencerStars)],
+              ["Conference talks, in Tamil", "1"],
+              ["Readers who pressed the heart", String(posts.reduce((n, p) => n + (p.data.reactions ?? 0), 0))],
+            ]}
+          />
+        </Stack>
+      </Col>
+
+      <Col span={2} rule>
+        {projects.map((p, i) => (
+          <Story last={i === projects.length - 1}>
+            <Headline level="brief" kicker={i === 0 ? "Technology" : undefined} deck={p.data.deck} href={`/technology#${p.id}`}>
+              {p.data.headline}
+            </Headline>
+            <Meta items={[String(p.data.year), site.statusLabel[p.data.status], starCounts[i] ? `${starCounts[i]} stars` : undefined]} />
+          </Story>
+        ))}
+        <JumpLine href="/technology" page="C1" />
+      </Col>
+
+      <Col span={2} rule>
+        <Stack gap="loose">
+          <PullQuote cite={`${site.person.name}, Dev.to, July 2022`}>Your first job will scare you. So here's a pinch of optimism.</PullQuote>
+          <Story last>
+            <Headline level="brief" kicker="Opinion" deck={editorsNote.data.description} href={`/opinion/${editorsNote.id}`}>
+              {editorsNote.data.headline}
+            </Headline>
+            <Byline author="The Editor" date={formatShort(editorsNote.data.date)} />
+            <JumpLine href={`/opinion/${editorsNote.id}`} page="D1" />
+          </Story>
+          <Box title="Corrections" kind="tinted">
+            <p>The first proof of this paper went to press as <em>The Adheeban Times</em>. The editor regrets the name and has changed it. No other edition was printed.</p>
+          </Box>
+        </Stack>
+      </Col>
+    </Grid>
+
+    <Rule kind="heavy" space="none" />
+
+    <Figure
+      src={harbour}
+      alt="Engraving of Madras harbour under construction in 1880, with a pier, railway tracks, tents and ships offshore"
+      width={1340}
+      height={490}
+      caption="From the archive. The new harbour works at Madras, as drawn for The Graphic in 1880: a pier, a railway, tents, and ships waiting offshore. The city this paper is named after, under construction, as it still is."
+      credit="Engraving: The Graphic, 1880. Public domain, via Wikimedia Commons"
+    />
+
+    <Rule kind="double" space="none" />
+
+    <Grid columns={3}>
+      <Col span={1}>
+        <Classified
+          heading="Situations filled"
+          items={[
+            { lead: "Software Engineer", text: `${site.person.employer}, ${site.paper.city}. Position taken since December 2023. Applicants need not apply.`, href: "/business" },
+          ]}
+        />
+      </Col>
+      <Col span={1}>
+        <Classified
+          heading="Free to a good home"
+          items={[
+            { lead: "Portfolio template", text: "Cartographic theme, compass rose included, one careful owner. Open source. See Navigator, page C1.", href: "/technology#navigator" },
+          ]}
+        />
+      </Col>
+      <Col span={1}>
+        <Classified
+          heading="Correspondence"
+          items={[
+            { lead: "Letters", text: `Write to the editor on ${site.social.github.label}, ${site.social.linkedin.label} or by post. Full directory on page F1. The Daily Five is on page E1, the advertisements on page G1.`, href: "/classifieds" },
+          ]}
+        />
+      </Col>
+    </Grid>
+  </Stack>
+</Base>

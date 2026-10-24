@@ -1,0 +1,40 @@
+---
+/** The section strip under the nameplate. */
+import { site } from "../site";
+
+interface Props {
+  current: string;
+}
+const { current } = Astro.props;
+---
+<nav class="nav" aria-label="Sections" data-print-hide>
+  <ul class="list">
+    {site.sections.map((s) => (
+      <li class="item">
+        <a class="label-inline" href={s.slug} aria-current={s.slug === current ? "page" : undefined}>{s.name}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .nav { border-top: var(--rule-hairline); border-bottom: var(--rule-medium); }
+  .list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .item a {
+    display: block;
+    padding: var(--space-inline-loose) var(--space-stack-loose);
+    text-decoration: none;
+  }
+  .item + .item { border-left: var(--rule-hairline); }
+  .item a:hover { background: var(--color-paper-tint); color: var(--color-ink); }
+  .item a[aria-current="page"] { background: var(--color-ink); color: var(--color-paper); }
+  @media (max-width: 36rem) {
+    .item a { padding-inline: var(--space-stack); }
+  }
+</style>

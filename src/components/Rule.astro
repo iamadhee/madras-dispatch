@@ -1,0 +1,43 @@
+---
+/**
+ * A printed rule. Newspapers separate with lines, not whitespace.
+ * `ornament` prints a fleuron centred on a hairline.
+ */
+interface Props {
+  kind?: "hairline" | "soft" | "medium" | "heavy" | "double" | "dashed" | "ornament";
+  space?: "none" | "stack" | "loose" | "story";
+}
+const { kind = "hairline", space = "loose" } = Astro.props;
+---
+{kind === "ornament"
+  ? <div class="ornament" data-space={space} role="separator"><span aria-hidden="true">❦</span></div>
+  : <hr class="rule" data-kind={kind} data-space={space} />}
+
+<style>
+  .rule { border: 0; margin: 0; }
+  .rule[data-kind="hairline"] { border-top: var(--rule-hairline); }
+  .rule[data-kind="soft"] { border-top: var(--rule-hairline-soft); }
+  .rule[data-kind="medium"] { border-top: var(--rule-medium); }
+  .rule[data-kind="heavy"] { border-top: var(--rule-heavy); }
+  .rule[data-kind="double"] { border-top: var(--rule-double); }
+  .rule[data-kind="dashed"] { border-top: var(--rule-dashed); }
+
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: var(--space-inline-loose);
+    color: var(--color-ink);
+    font-size: var(--text-deck);
+    line-height: var(--leading-solid);
+  }
+  .ornament::before, .ornament::after {
+    content: "";
+    flex: 1;
+    border-top: var(--rule-hairline);
+  }
+
+  [data-space="none"] { margin-block: 0; }
+  [data-space="stack"] { margin-block: var(--space-stack); }
+  [data-space="loose"] { margin-block: var(--space-stack-loose); }
+  [data-space="story"] { margin-block: var(--space-story); }
+</style>

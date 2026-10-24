@@ -1,0 +1,28 @@
+---
+/** A boxed sidebar. Ruled, tinted, or dashed like a cut-out. */
+interface Props {
+  title?: string;
+  kind?: "ruled" | "tinted" | "dashed";
+  as?: "aside" | "div" | "section";
+  titleAs?: "h2" | "h3" | "h4";
+}
+const { title, kind = "ruled", as: Tag = "aside", titleAs: Title = "h3" } = Astro.props;
+---
+<Tag class="box" data-kind={kind}>
+  {title && <Title class="box-title label-box">{title}</Title>}
+  <div class="body"><slot /></div>
+</Tag>
+
+<style>
+  .box { padding: var(--space-stack-loose); }
+  .box[data-kind="ruled"] { border: var(--rule-hairline); border-top: var(--rule-heavy); }
+  .box[data-kind="tinted"] { background: var(--color-paper-tint); border: var(--rule-hairline); }
+  .box[data-kind="dashed"] { border: var(--rule-dashed); }
+  .box-title {
+    padding-bottom: var(--space-inline-loose);
+    margin-bottom: var(--space-stack);
+    border-bottom: var(--rule-hairline);
+  }
+  .body { font-size: var(--text-compact); line-height: var(--leading-tight); }
+  .body > :global(* + *) { margin-top: var(--space-stack); }
+</style>

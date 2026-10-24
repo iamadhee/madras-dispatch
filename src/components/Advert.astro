@@ -1,0 +1,84 @@
+---
+/**
+ * A display advertisement, set the way a jobbing printer set one:
+ * a double-ruled frame, every line centred, type that climbs to the name and falls away.
+ * The whole notice is one link. Pages run these on the Advertisements page, never between stories.
+ */
+import type { ImageMetadata } from "astro";
+import { site } from "../site";
+import Plate from "./Plate.astro";
+
+interface Props {
+  name: string;
+  tagline: string;
+  host: string;
+  url: string;
+  status: keyof typeof site.advertLine;
+  image: ImageMetadata;
+}
+const { name, tagline, host, url, status, image } = Astro.props;
+---
+<a class="advert" href={url}>
+  <span class="frame">
+    <span class="line label">{site.advertLine[status]}</span>
+    <span class="name ink-display">{name}</span>
+    <span class="ornament" aria-hidden="true">❦</span>
+    <span class="picture"><Plate src={image} alt={`${name}, as it appears on screen`} width={640} height={400} position="top" /></span>
+    <span class="tagline">{tagline}</span>
+    <span class="call label-inline">Apply within, at {host}</span>
+  </span>
+</a>
+
+<style>
+  .advert {
+    display: block;
+    height: 100%;
+    border: var(--rule-double);
+    padding: var(--space-hair);
+    text-decoration: none;
+    color: var(--color-ink);
+    text-align: center;
+    transition: background var(--motion-fast) ease;
+  }
+  .advert:hover { background: var(--color-paper-tint); color: var(--color-ink); }
+  .frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-stack);
+    height: 100%;
+    border: var(--rule-hairline);
+    padding: var(--space-stack-loose) var(--space-stack-loose) var(--space-stack);
+  }
+  .line { color: var(--color-stamp); }
+  .name {
+    font-family: var(--font-headline);
+    font-size: var(--text-headline-secondary);
+    font-weight: var(--weight-headline);
+    line-height: var(--leading-headline);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  .advert:hover .name { text-decoration: underline; text-decoration-thickness: 0.06em; text-underline-offset: 0.12em; }
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: var(--space-inline-loose);
+    width: 100%;
+    font-size: var(--text-deck);
+    line-height: var(--leading-solid);
+  }
+  .ornament::before, .ornament::after { content: ""; flex: 1; border-top: var(--rule-hairline); }
+  .picture { display: block; width: 100%; }
+  .tagline {
+    font-style: italic;
+    font-size: var(--text-body);
+    line-height: var(--leading-deck);
+    color: var(--color-ink-soft);
+    text-wrap: balance;
+    max-width: var(--measure-narrow);
+  }
+  .call { margin-top: auto; color: var(--color-ink-soft); }
+  .advert:hover .call { color: var(--color-link-hover); }
+</style>

@@ -1,0 +1,23 @@
+---
+/** A documented example: name, rule of use, then the live component. */
+interface Props {
+  name: string;
+  rule: string;
+}
+const { name, rule } = Astro.props;
+---
+<section class="spec">
+  <header class="head">
+    <h3 class="name">{name}</h3>
+    <p class="rule">{rule}</p>
+  </header>
+  <div class="example"><slot /></div>
+</section>
+
+<style>
+  .spec { display: flex; flex-direction: column; gap: var(--space-stack-loose); }
+  .head { display: flex; flex-direction: column; gap: var(--space-inline); }
+  .name { font-family: var(--font-headline); font-weight: var(--weight-headline); font-size: var(--text-headline-brief); }
+  .rule { font-size: var(--text-small); color: var(--color-ink-soft); max-width: var(--measure-body); }
+  .example { padding: var(--space-stack-loose); border: var(--rule-hairline-soft); }
+</style>

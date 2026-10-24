@@ -1,0 +1,58 @@
+---
+/**
+ * A press photograph: a plate with an italic caption and a small credit.
+ * `mug` floats a small portrait into the text, newspaper style.
+ */
+import type { ImageMetadata } from "astro";
+import Plate from "./Plate.astro";
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  credit?: string;
+  width: number;
+  height: number;
+  position?: string;
+  loading?: "eager" | "lazy";
+  variant?: "plate" | "mug";
+}
+const { src, alt, caption, credit, width, height, position = "center", loading = "lazy", variant = "plate" } = Astro.props;
+---
+<figure class="figure" data-variant={variant}>
+  <Plate src={src} alt={alt} width={width} height={height} position={position} loading={loading} />
+  {(caption || credit) && (
+    <figcaption class="caption">
+      {caption && <span class="text">{caption}</span>}
+      {credit && <span class="credit label">{credit}</span>}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .figure { display: flex; flex-direction: column; gap: var(--space-inline-loose); }
+  .figure[data-variant="mug"] {
+    float: right;
+    width: 7.5rem;
+    margin: 0 0 var(--space-stack) var(--space-gutter);
+  }
+  .caption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-inline) var(--space-gutter);
+    align-items: baseline;
+    font-size: var(--text-small);
+    line-height: var(--leading-tight);
+    text-align: left;
+  }
+  .text { flex: 1 1 16rem; font-style: italic; color: var(--color-ink-soft); text-wrap: pretty; }
+  .credit {
+    margin-left: auto;
+    font-weight: var(--weight-text);
+    color: var(--color-ink-muted);
+  }
+  @media (max-width: 44rem) {
+    .figure[data-variant="mug"] { width: 6rem; }
+  }
+</style>

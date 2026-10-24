@@ -1,0 +1,49 @@
+---
+/** A ruled table, for ledgers of jobs, degrees, or parts. */
+interface Props {
+  caption?: string;
+  columns: ReadonlyArray<string>;
+  rows: ReadonlyArray<ReadonlyArray<string>>;
+}
+const { caption, columns, rows } = Astro.props;
+---
+<table class="ledger">
+  {caption && <caption class="caption label-inline">{caption}</caption>}
+  <thead>
+    <tr>{columns.map((c) => <th scope="col" class="label">{c}</th>)}</tr>
+  </thead>
+  <tbody>
+    {rows.map((row) => <tr>{row.map((cell) => <td>{cell}</td>)}</tr>)}
+  </tbody>
+</table>
+
+<style>
+  .ledger {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-compact);
+    line-height: var(--leading-tight);
+    border-top: var(--rule-heavy);
+    border-bottom: var(--rule-hairline);
+  }
+  .caption {
+    caption-side: top;
+    text-align: left;
+    padding-bottom: var(--space-inline-loose);
+  }
+  td { overflow-wrap: break-word; hyphens: auto; }
+  th {
+    text-align: left;
+    padding: var(--space-inline-loose) var(--space-inline-loose) var(--space-inline) 0;
+    border-bottom: var(--rule-hairline);
+    vertical-align: bottom;
+  }
+  td {
+    padding: var(--space-inline-loose) var(--space-inline-loose) var(--space-inline-loose) 0;
+    border-bottom: var(--rule-hairline-soft);
+    vertical-align: top;
+    font-variant-numeric: tabular-nums;
+  }
+  tr:last-child td { border-bottom: 0; }
+  td:first-child { font-weight: var(--weight-emphasis); }
+</style>

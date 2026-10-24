@@ -1,0 +1,284 @@
+---
+/**
+ * The Daily Five: one five-letter word a day, six guesses, the same word for every reader.
+ * The day is counted from `epoch` in the reader's local time. Progress and streaks stay in the browser.
+ * Word lists come from src/data/words.ts, built by scripts/build-words.mjs.
+ */
+interface Props {
+  title?: string;
+  /** Day 1, as YYYY-MM-DD. */
+  epoch: string;
+  /** Printed in the share text. */
+  shareUrl: string;
+  paperName: string;
+}
+const { title = "The Daily Five", epoch, shareUrl, paperName } = Astro.props;
+const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+---
+<section class="daily" data-daily data-epoch={epoch} data-share-url={shareUrl} data-paper={paperName}>
+  <header class="head">
+    <h2 class="title">{title}</h2>
+    <p class="edition label">No. <span data-day>1</span></p>
+    <p class="how">Guess the word in six tries. Solid ink means right letter, right place. Red means right letter, wrong place.</p>
+  </header>
+
+  <div class="board" data-board role="group" aria-label="Guesses">
+    {Array.from({ length: 6 }, (_, r) => (
+      <div class="row" data-row={r}>
+        {Array.from({ length: 5 }, (_, c) => <div class="tile" data-tile style={`--delay: ${c}`} aria-live={c === 0 ? "polite" : undefined}></div>)}
+      </div>
+    ))}
+  </div>
+
+  <p class="message" data-message aria-live="assertive"></p>
+
+  <div class="keys" data-keys aria-label="Keyboard">
+    {rows.map((row, i) => (
+      <div class="keyrow">
+        {i === 2 && <button type="button" class="key wide" data-key="Enter">Enter</button>}
+        {row.split("").map((k) => <button type="button" class="key" data-key={k}>{k}</button>)}
+        {i === 2 && <button type="button" class="key wide" data-key="Backspace" aria-label="Delete">⌫</button>}
+      </div>
+    ))}
+  </div>
+
+  <div class="after" data-after hidden>
+    <p class="answer" data-answer></p>
+    <table class="stats">
+      <caption class="caption label">Your record</caption>
+      <tbody>
+        <tr><th scope="row">Played</th><td data-stat="played">0</td></tr>
+        <tr><th scope="row">Won</th><td data-stat="won">0</td></tr>
+        <tr><th scope="row">Current streak</th><td data-stat="streak">0</td></tr>
+        <tr><th scope="row">Best streak</th><td data-stat="max">0</td></tr>
+      </tbody>
+    </table>
+    <p class="actions">
+      <button type="button" class="share label" data-share>Share your grid</button>
+      <span class="next">Next word at midnight, <span data-countdown></span> from now.</span>
+    </p>
+  </div>
+</section>
+
+<script>
+  import { answers, allowed } from "../data/words";
+
+  const WORD = 5;
+  const TRIES = 6;
+  const allowedSet = new Set(allowed.match(/.{5}/g) ?? []);
+  const answerCount = answers.length / WORD;
+
+  for (const root of document.querySelectorAll<HTMLElement>("[data-daily]")) {
+    const epoch = root.dataset.epoch!;
+    const [ey, em, ed] = epoch.split("-").map(Number);
+    const startOfToday = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+    const dayIndex = Math.round((startOfToday().getTime() - new Date(ey, em - 1, ed).getTime()) / 86_400_000);
+    const dayNumber = dayIndex + 1;
+    const pick = (i: number) => answers.slice(((i % answerCount) + answerCount) % answerCount * WORD, ((i % answerCount) + answerCount) % answerCount * WORD + WORD).toUpperCase();
+    const answer = pick(dayIndex);
+    const yesterday = dayIndex > 0 ? pick(dayIndex - 1) : null;
+
+    const $ = <T extends Element>(sel: string) => root.querySelector<T>(sel)!;
+    $("[data-day]").textContent = String(dayNumber);
+    const rows = [...root.querySelectorAll<HTMLElement>("[data-row]")];
+    const message = $<HTMLElement>("[data-message]");
+    const after = $<HTMLElement>("[data-after]");
+
+    type State = { day: number; guesses: string[]; status: "playing" | "won" | "lost" };
+    type Stats = { played: number; won: number; streak: number; max: number; lastWon: number };
+    const read = <T,>(k: string, fallback: T): T => { try { return JSON.parse(localStorage.getItem(k) ?? "") as T; } catch { return fallback; } };
+    const write = (k: string, v: unknown) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+    let state = read<State>("daily5:state", { day: dayNumber, guesses: [], status: "playing" });
+    if (state.day !== dayNumber) state = { day: dayNumber, guesses: [], status: "playing" };
+    const stats = read<Stats>("daily5:stats", { played: 0, won: 0, streak: 0, max: 0, lastWon: 0 });
+    let current = "";
+    let busy = false;
+
+    const score = (guess: string): Array<"correct" | "present" | "absent"> => {
+      const out: Array<"correct" | "present" | "absent"> = Array(WORD).fill("absent");
+      const left: Record<string, number> = {};
+      for (let i = 0; i < WORD; i++) {
+        if (guess[i] === answer[i]) out[i] = "correct";
+        else left[answer[i]] = (left[answer[i]] ?? 0) + 1;
+      }
+      for (let i = 0; i < WORD; i++) {
+        if (out[i] === "correct") continue;
+        if (left[guess[i]]) { out[i] = "present"; left[guess[i]] -= 1; }
+      }
+      return out;
+    };
+
+    const rank = { absent: 1, present: 2, correct: 3 } as const;
+    const paintKeys = () => {
+      const best: Record<string, keyof typeof rank> = {};
+      for (const g of state.guesses) score(g).forEach((s, i) => { const k = g[i]; if (!best[k] || rank[s] > rank[best[k]]) best[k] = s; });
+      root.querySelectorAll<HTMLButtonElement>("[data-key]").forEach((b) => { const s = best[b.dataset.key!]; if (s) b.dataset.state = s; else delete b.dataset.state; });
+    };
+
+    const paintRow = (r: number, word: string, states?: ReadonlyArray<string>, animate = false) => {
+      const tiles = rows[r].querySelectorAll<HTMLElement>("[data-tile]");
+      tiles.forEach((t, i) => {
+        t.textContent = word[i] ?? "";
+        t.dataset.filled = word[i] ? "" : undefined as unknown as string;
+        if (!word[i]) delete t.dataset.filled;
+        if (states) {
+          if (animate) t.classList.add("flip");
+          t.dataset.state = states[i];
+          t.setAttribute("aria-label", `${word[i]}, ${states[i] === "correct" ? "right place" : states[i] === "present" ? "wrong place" : "not in word"}`);
+        } else { delete t.dataset.state; t.removeAttribute("aria-label"); }
+      });
+    };
+
+    const say = (text: string, sticky = false) => {
+      message.textContent = text;
+      if (!sticky) setTimeout(() => { if (message.textContent === text) message.textContent = ""; }, 1800);
+    };
+    const praise = ["Scoop.", "Exclusive.", "Front page.", "Page two.", "Late edition.", "Correction printed, just in time."];
+
+    const finish = () => {
+      after.hidden = false;
+      $("[data-answer]").textContent = state.status === "won" ? `${praise[state.guesses.length - 1]} The word was ${answer}.` : `The word was ${answer}.`;
+      (["played", "won", "streak", "max"] as const).forEach((k) => { $(`[data-stat="${k}"]`).textContent = k === "won" && stats.played ? `${stats.won} (${Math.round((stats.won / stats.played) * 100)}%)` : String(stats[k]); });
+      const tick = () => { const now = new Date(); const mid = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1); const s = Math.max(0, Math.floor((mid.getTime() - now.getTime()) / 1000)); $("[data-countdown]").textContent = `${Math.floor(s / 3600)}h ${String(Math.floor((s % 3600) / 60)).padStart(2, "0")}m`; };
+      tick(); setInterval(tick, 30_000);
+    };
+
+    const submit = () => {
+      if (busy) return;
+      if (current.length < WORD) { say("Not enough letters."); rows[state.guesses.length].classList.add("shake"); setTimeout(() => rows[state.guesses.length]?.classList.remove("shake"), 500); return; }
+      if (!allowedSet.has(current.toLowerCase())) { say("Not in the dictionary."); rows[state.guesses.length].classList.add("shake"); setTimeout(() => rows[state.guesses.length]?.classList.remove("shake"), 500); return; }
+      const r = state.guesses.length;
+      const s = score(current);
+      state.guesses.push(current);
+      paintRow(r, current, s, true);
+      busy = true;
+      setTimeout(() => {
+        busy = false;
+        paintKeys();
+        if (current === answer) state.status = "won";
+        else if (state.guesses.length >= TRIES) state.status = "lost";
+        current = "";
+        if (state.status !== "playing") {
+          stats.played += 1;
+          if (state.status === "won") { stats.won += 1; stats.streak = stats.lastWon === dayNumber - 1 ? stats.streak + 1 : 1; stats.lastWon = dayNumber; stats.max = Math.max(stats.max, stats.streak); }
+          else stats.streak = 0;
+          write("daily5:stats", stats);
+          finish();
+        }
+        write("daily5:state", state);
+      }, 5 * 120 + 400);
+      write("daily5:state", state);
+    };
+
+    const key = (k: string) => {
+      if (state.status !== "playing" || busy) return;
+      if (k === "Enter") submit();
+      else if (k === "Backspace") { current = current.slice(0, -1); paintRow(state.guesses.length, current); }
+      else if (/^[A-Z]$/.test(k) && current.length < WORD) { current += k; paintRow(state.guesses.length, current); }
+    };
+    root.querySelectorAll<HTMLButtonElement>("[data-key]").forEach((b) => b.addEventListener("click", () => key(b.dataset.key!)));
+    document.addEventListener("keydown", (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) return;
+      if (e.key === "Enter" || e.key === "Backspace") { key(e.key); e.preventDefault(); }
+      else if (/^[a-zA-Z]$/.test(e.key)) key(e.key.toUpperCase());
+    });
+
+    $("[data-share]").addEventListener("click", async () => {
+      const grid = state.guesses.map((g) => score(g).map((s) => (s === "correct" ? "⬛" : s === "present" ? "🟥" : "⬜")).join("")).join("\n");
+      const text = `${root.dataset.paper} · ${root.querySelector(".title")!.textContent} No. ${dayNumber} · ${state.status === "won" ? state.guesses.length : "X"}/${TRIES}\n${grid}\n${root.dataset.shareUrl}`;
+      try { await navigator.clipboard.writeText(text); say("Copied. Paste it where people can see.", true); } catch { say(text, true); }
+    });
+
+    // Restore today's game.
+    state.guesses.forEach((g, r) => paintRow(r, g, score(g)));
+    paintKeys();
+    if (state.status !== "playing") finish();
+    if (yesterday && state.status === "playing" && state.guesses.length === 0) say(`Yesterday's word was ${yesterday}.`, true);
+  }
+</script>
+
+<style>
+  .daily { display: flex; flex-direction: column; gap: var(--space-stack-loose); align-items: center; }
+  .head { text-align: center; display: flex; flex-direction: column; gap: var(--space-inline); border-top: var(--rule-heavy); border-bottom: var(--rule-hairline); padding: var(--space-stack) 0; width: 100%; }
+  .title {
+    font-family: var(--font-headline);
+    font-size: var(--text-headline-secondary);
+    font-weight: var(--weight-headline);
+    line-height: var(--leading-headline);
+  }
+  .edition { color: var(--color-ink-soft); }
+  .how { font-size: var(--text-compact); font-style: italic; color: var(--color-ink-soft); max-width: var(--measure-body); margin-inline: auto; text-wrap: pretty; }
+
+  .board { display: grid; gap: var(--space-inline); width: min(100%, 20rem); }
+  .row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-inline); }
+  .tile {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: var(--rule-medium);
+    border-color: var(--color-rule-soft);
+    background: var(--color-paper-raised);
+    font-family: var(--font-headline);
+    font-size: var(--text-headline-secondary);
+    font-weight: var(--weight-headline);
+    line-height: var(--leading-solid);
+    text-transform: uppercase;
+    transition: background var(--motion-fast) ease, border-color var(--motion-fast) ease, color var(--motion-fast) ease;
+  }
+  .tile[data-filled] { border-color: var(--color-ink); }
+  .tile[data-state="absent"] { background: var(--color-paper-tint); border-color: var(--color-paper-tint); color: var(--color-ink-muted); }
+  .tile[data-state="present"] { background: var(--color-stamp); border-color: var(--color-stamp); color: var(--color-on-stamp); }
+  .tile[data-state="correct"] { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-paper); }
+  .tile.flip { animation: flip var(--motion-slow) ease both; animation-delay: calc(var(--delay) * 120ms); }
+  @keyframes flip { 0% { transform: rotateX(0); } 45% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
+  .row.shake { animation: shake 400ms ease; }
+  @keyframes shake { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
+
+  .message { min-height: 1.5em; font-size: var(--text-compact); font-style: italic; color: var(--color-ink-soft); text-align: center; }
+
+  .keys { display: flex; flex-direction: column; gap: var(--space-inline-loose); width: min(100%, 30rem); }
+  .keyrow { display: flex; justify-content: center; gap: var(--space-inline); }
+  .key {
+    flex: 1 1 0;
+    max-width: 2.6rem;
+    min-width: 0;
+    height: 3.2rem;
+    border: var(--rule-hairline);
+    background: var(--color-paper-raised);
+    color: var(--color-ink);
+    font-family: var(--font-headline);
+    font-weight: var(--weight-headline);
+    font-size: var(--text-compact);
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--motion-fast) ease;
+  }
+  .key.wide { flex: 1.6 1 0; max-width: 4.6rem; font-size: var(--text-fine); letter-spacing: var(--tracking-caps); }
+  .key:hover { background: var(--color-paper-tint); }
+  .key[data-state="absent"] { background: var(--color-paper-tint); color: var(--color-ink-soft); border-color: var(--color-paper-tint); }
+  .key[data-state="present"] { background: var(--color-stamp); color: var(--color-on-stamp); border-color: var(--color-stamp); }
+  .key[data-state="correct"] { background: var(--color-ink); color: var(--color-paper); border-color: var(--color-ink); }
+
+  .after { width: min(100%, 30rem); display: flex; flex-direction: column; gap: var(--space-stack); border-top: var(--rule-hairline); padding-top: var(--space-stack-loose); }
+  .answer { font-family: var(--font-headline); font-weight: var(--weight-headline); font-size: var(--text-deck); text-align: center; }
+  .stats { width: 100%; border-collapse: collapse; font-size: var(--text-compact); }
+  .caption { caption-side: top; text-align: left; padding-bottom: var(--space-inline); }
+  .stats th { text-align: left; font-weight: var(--weight-text); padding: var(--space-inline) 0; border-bottom: var(--rule-hairline-soft); }
+  .stats td { text-align: right; font-variant-numeric: tabular-nums; padding: var(--space-inline) 0; border-bottom: var(--rule-hairline-soft); font-weight: var(--weight-emphasis); }
+  .actions { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-stack); font-size: var(--text-small); color: var(--color-ink-soft); }
+  .share {
+    color: var(--color-paper);
+    background: var(--color-ink);
+    border: var(--rule-hairline);
+    padding: var(--space-inline-loose) var(--space-stack-loose);
+    cursor: pointer;
+  }
+  .share:hover { background: var(--color-stamp); border-color: var(--color-stamp); }
+  @media (prefers-reduced-motion: reduce) {
+    .tile.flip, .row.shake { animation: none; }
+  }
+  @media print { .keys, .actions { display: none; } }
+</style>

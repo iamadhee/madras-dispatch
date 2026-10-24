@@ -1,0 +1,55 @@
+---
+/**
+ * A printing plate: any picture, screened to ink on paper.
+ * Hold the pointer on it and the ink bleeds into colour.
+ * Figure wraps it with a caption. Advert and mugshots use it bare.
+ */
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  width: number;
+  height: number;
+  position?: string;
+  loading?: "eager" | "lazy";
+}
+const { src, alt, width, height, position = "center", loading = "lazy" } = Astro.props;
+---
+<div class="plate">
+  <Image src={src} alt={alt} width={width} height={height} fit="cover" position={position} loading={loading} densities={[1, 2]} />
+</div>
+
+<style>
+  .plate {
+    position: relative;
+    border: var(--rule-hairline);
+    background: var(--color-photo-plate);
+    overflow: hidden;
+  }
+  .plate img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: grayscale(1) contrast(1.12) brightness(1.04);
+    mix-blend-mode: var(--blend-photo);
+    transition: filter var(--motion-slow) ease;
+  }
+  .plate::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--opacity-halftone);
+    mix-blend-mode: multiply;
+    background-image: radial-gradient(circle at center, var(--color-halftone) 0.55px, transparent 0.9px);
+    background-size: 3px 3px;
+    transition: opacity var(--motion-slow) ease;
+  }
+  .plate:hover img { filter: grayscale(0) contrast(1) brightness(1); }
+  .plate:hover::after { opacity: 0; }
+  @media print {
+    .plate::after { display: none; }
+  }
+</style>
