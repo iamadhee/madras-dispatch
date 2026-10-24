@@ -19,14 +19,14 @@ interface Props {
 const { name, tagline, host, url, status, image } = Astro.props;
 ---
 <a class="advert" href={url}>
-  <span class="frame">
+  <div class="frame">
     <span class="line label">{site.advertLine[status]}</span>
     <span class="name ink-display">{name}</span>
     <span class="ornament" aria-hidden="true">❦</span>
-    <span class="picture"><Plate src={image} alt={`${name}, as it appears on screen`} width={640} height={400} position="top" /></span>
+    <div class="picture"><Plate src={image} alt={`${name}, as it appears on screen`} width={640} height={400} position="top" /></div>
     <span class="tagline">{tagline}</span>
     <span class="call label-inline">Apply within, at {host}</span>
-  </span>
+  </div>
 </a>
 
 <style>
