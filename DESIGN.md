@@ -66,7 +66,7 @@ The stock is drawn, not flat. Two fixed overlays cover the sheet: grain and fibr
 
 The ink is pressed, not painted. Every letter spreads a hair into the paper (`--ink-spread`, a text shadow on `body`). Display type (the nameplate, section names, banner, lead and secondary headlines, pull quotes, advert names) carries the class `ink-display`: a noise mask gives uneven coverage (`--texture-ink`) and an SVG filter in the page gives ragged edges (`--filter-ink`, `#ink-bleed` in `Base.astro`). Brief headlines and small text stay crisp. Print drops all of it.
 
-No two impressions are alike. On every load the page re-seeds the four textures and the edge filter before the sheet paints, each piece of display type takes the ink mask at its own offset, and each stamp lands at its own tilt. The seeds live in the texture primitives; the press script in `Base.astro` only replaces them.
+No two visits are alike. When a reader arrives, the press re-seeds the four textures and the edge filter before the sheet paints. Each piece of display type takes the ink mask at its own offset, and each stamp lands at its own tilt. All of these come from the visit's seed, kept in the browser for the session, so turning a page does not change the paper under the reader. The seeds live in the texture primitives; the press script in `Base.astro` only replaces them.
 
 ## Layout
 

@@ -70,16 +70,23 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Ast
       </filter>
     </svg>
     <script is:inline>
-      // The press. Every impression is different: re-seed the paper and ink textures and the edge filter before the sheet paints.
+      // The press. Every visit gets its own sheet: re-seed the paper and ink textures and the edge filter before the sheet paints.
+      // The seeds hold for the whole visit, so turning a page does not change the paper under the reader.
       (() => {
         const root = document.documentElement;
         const styles = getComputedStyle(root);
-        const seed = () => String(1 + Math.floor(Math.random() * 9000));
-        for (const role of ["--texture-grain", "--texture-fibre", "--texture-mottle", "--texture-ink"]) {
+        const fresh = () => Array.from({ length: 5 }, () => String(1 + Math.floor(Math.random() * 9000)));
+        let seeds = fresh();
+        try {
+          const kept = JSON.parse(sessionStorage.getItem("press") ?? "null");
+          if (Array.isArray(kept) && kept.length === 5) seeds = kept;
+          else sessionStorage.setItem("press", JSON.stringify(seeds));
+        } catch {}
+        ["--texture-grain", "--texture-fibre", "--texture-mottle", "--texture-ink"].forEach((role, i) => {
           const value = styles.getPropertyValue(role);
-          if (value) root.style.setProperty(role, value.replace(/seed='\d+'/, `seed='${seed()}'`));
-        }
-        document.querySelector("#ink-bleed feTurbulence")?.setAttribute("seed", seed());
+          if (value) root.style.setProperty(role, value.replace(/seed='\d+'/, `seed='${seeds[i]}'`));
+        });
+        document.querySelector("#ink-bleed feTurbulence")?.setAttribute("seed", seeds[4]);
       })();
     </script>
     <a class="skip" href="#page" data-print-hide>Skip to the stories</a>
@@ -93,11 +100,20 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Ast
 
 <script>
   // Each piece of display type takes the ink mask at its own offset, and each stamp lands at its own tilt.
+  // Both come from the visit's seed and the element's text, so the nameplate prints the same way on every page of a visit.
+  let visit = 0;
+  try { visit = Number(JSON.parse(sessionStorage.getItem("press") ?? "[0]")[0]) || 0; } catch {}
+  const roll = (text: string, salt: number) => {
+    let h = (visit * 2654435761 + salt) >>> 0;
+    for (const ch of text) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
+    return h / 4294967296;
+  };
   for (const el of document.querySelectorAll<HTMLElement>(".ink-display")) {
-    el.style.setProperty("--ink-offset", `${Math.floor(Math.random() * 360)}px ${Math.floor(Math.random() * 360)}px`);
+    const text = el.textContent ?? "";
+    el.style.setProperty("--ink-offset", `${Math.floor(roll(text, 1) * 360)}px ${Math.floor(roll(text, 2) * 360)}px`);
   }
   for (const el of document.querySelectorAll<HTMLElement>(".stamp[data-tilt]")) {
-    el.style.setProperty("--stamp-tilt", `${(-7 + Math.random() * 4).toFixed(1)}deg`);
+    el.style.setProperty("--stamp-tilt", `${(-7 + roll(el.textContent ?? "", 3) * 4).toFixed(1)}deg`);
   }
 
   // The browser's own toolbar takes the colour of the paper, in either edition.
