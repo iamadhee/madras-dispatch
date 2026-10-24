@@ -23,7 +23,7 @@ To add a visual pattern: add a component. Pages compose components and hold no s
 
 ## Two editions
 
-The same roles print in two editions. The day edition is newsprint grey with printed black. The evening edition, for readers whose system prefers dark, is night paper with light ink. Only `semantic.css` knows about the evening edition. No component does.
+The same roles print in two editions. The day edition is newsprint grey with printed black. The evening edition is night paper with light ink. It follows the reader's system, or the edition they chose with the switch in the edition line, which the browser remembers. Every colour role is one `light-dark()` pair, so neither edition is a copy of the other; `data-theme` on the root picks the scheme. Only `semantic.css` knows about the evening edition. No component does.
 
 ## Palette
 

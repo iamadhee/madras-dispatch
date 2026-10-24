@@ -47,13 +47,33 @@ const wx = await weather();
   <p class="edition label" data-first-year={site.paper.firstVolumeYear}>
     <span class="vol">Vol. <span data-edition-volume>{ed.volume}</span>, No. <span data-edition-number>{ed.number}</span></span>
     <span class="date"><span class="city">{site.paper.city}</span>, <time data-edition-date datetime={ed.iso}>{ed.date}</time></span>
-    <span class="price">Established {site.paper.firstVolumeYear}</span>
+    <span class="price">
+      <span class="founded">Established {site.paper.firstVolumeYear}</span>
+      <button type="button" class="switch label" data-edition-switch data-print-hide aria-live="polite">Evening edition</button>
+    </span>
   </p>
 
   <Nav current={current} />
 </header>
 
 <script>
+  // The edition switch. Day or evening, kept in the browser; choosing what the system already shows clears the choice.
+  for (const button of document.querySelectorAll<HTMLButtonElement>("[data-edition-switch]")) {
+    const root = document.documentElement;
+    const system = matchMedia("(prefers-color-scheme: dark)");
+    const current = () => root.dataset.theme ?? (system.matches ? "dark" : "light");
+    const label = () => { button.textContent = current() === "dark" ? "Morning edition" : "Evening edition"; };
+    button.addEventListener("click", () => {
+      const next = current() === "dark" ? "light" : "dark";
+      const systemNow = system.matches ? "dark" : "light";
+      if (next === systemNow) { delete root.dataset.theme; try { localStorage.removeItem("edition"); } catch {} }
+      else { root.dataset.theme = next; try { localStorage.setItem("edition", next); } catch {} }
+      label();
+    });
+    system.addEventListener("change", label);
+    label();
+  }
+
   // Keep the dateline on today's date, even on a cached build.
   const line = document.querySelector<HTMLElement>(".edition[data-first-year]");
   if (line) {
@@ -126,13 +146,28 @@ const wx = await weather();
     font-variant-numeric: tabular-nums;
   }
   .edition .date { text-align: center; }
-  .edition .price { text-align: right; }
+  .edition .price { text-align: right; display: flex; gap: var(--space-inline-loose); align-items: baseline; }
+  .founded::after { content: "\00b7"; margin-left: var(--space-inline-loose); color: var(--color-ink-faint); }
+  .switch {
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: var(--color-ink);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+  .switch:hover { color: var(--color-link-hover); }
 
   @media (max-width: 56rem) {
     .plate { grid-template-columns: minmax(0, 1fr); justify-items: stretch; }
     .ear-left, .ear-right { display: none; }
     .nameplate { white-space: normal; }
     .edition { flex-direction: column; align-items: center; gap: var(--space-hair); text-align: center; }
-    .edition .price { display: none; }
+    .founded { display: none; }
   }
 </style>

@@ -69,7 +69,7 @@ const type = [
           <Prose columns={2}>
             <p>The design is built in layers, and each layer may read only the one beneath it. Primitives hold raw values. Semantic tokens give those values a role. Components read the roles. Pages compose components and carry no styling of their own.</p>
             <p>The check runs before every build and fails it on any breach: a component that reaches for a primitive, a page with a style block, a raw colour anywhere above the primitive layer. The rules are listed in the ledger on this page.</p>
-            <p>The evening edition is the same set of roles with night paper and light ink. It follows the reader's system setting. No component knows which edition it is printed in.</p>
+            <p>The evening edition is the same set of roles with night paper and light ink. It follows the reader's system setting, or the edition chosen from the switch in the edition line. No component knows which edition it is printed in.</p>
           </Prose>
         </Stack>
       </Col>

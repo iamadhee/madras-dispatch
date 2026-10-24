@@ -26,6 +26,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      // The edition the reader chose last time, applied before the sheet paints. No choice means follow the system.
+      try { const e = localStorage.getItem("edition"); if (e === "light" || e === "dark") document.documentElement.dataset.theme = e; } catch {}
+    </script>
     <link rel="preload" href={textFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={textItalic} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={headlineFont} as="font" type="font/woff2" crossorigin />

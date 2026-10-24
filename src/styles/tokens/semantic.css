@@ -2,34 +2,38 @@
  * Layer 2 — Semantic tokens.
  * Every value here is a role, mapped to a primitive. No raw values.
  * Components read ONLY these. Pages read nothing; they compose components.
+ *
+ * Two editions, one set of roles. Each colour is light-dark(day, evening) and resolves through the
+ * root's colour scheme: the reader's system by default, or the edition they chose with the switch
+ * (data-theme on <html>). Blend modes are not colours, so they are repeated for the evening edition below.
  */
 :root {
   /* Surfaces */
-  --color-paper: var(--primitive-newsprint-200);
-  --color-paper-raised: var(--primitive-newsprint-50);
-  --color-paper-tint: var(--primitive-newsprint-300);
-  --color-paper-deep: var(--primitive-newsprint-400);
+  --color-paper: light-dark(var(--primitive-newsprint-200), var(--primitive-night-900));
+  --color-paper-raised: light-dark(var(--primitive-newsprint-50), var(--primitive-night-800));
+  --color-paper-tint: light-dark(var(--primitive-newsprint-300), var(--primitive-night-700));
+  --color-paper-deep: light-dark(var(--primitive-newsprint-400), var(--primitive-night-600));
 
   /* Ink */
-  --color-ink: var(--primitive-ink-900);
-  --color-ink-soft: var(--primitive-ink-700);
-  --color-ink-muted: var(--primitive-ink-500);
-  --color-ink-faint: var(--primitive-ink-300);
+  --color-ink: light-dark(var(--primitive-ink-900), var(--primitive-newsprint-200));
+  --color-ink-soft: light-dark(var(--primitive-ink-700), var(--primitive-newsprint-400));
+  --color-ink-muted: light-dark(var(--primitive-ink-500), var(--primitive-ink-300));
+  --color-ink-faint: light-dark(var(--primitive-ink-300), var(--primitive-ink-500));
 
   /* Rules */
-  --color-rule: var(--primitive-ink-900);
-  --color-rule-soft: var(--primitive-ink-200);
+  --color-rule: light-dark(var(--primitive-ink-900), var(--primitive-newsprint-200));
+  --color-rule-soft: light-dark(var(--primitive-ink-200), var(--primitive-night-600));
 
   /* Spot colour */
-  --color-stamp: var(--primitive-red-600);
-  --color-stamp-deep: var(--primitive-red-700);
-  --color-on-stamp: var(--primitive-newsprint-50);
+  --color-stamp: light-dark(var(--primitive-red-600), var(--primitive-red-400));
+  --color-stamp-deep: light-dark(var(--primitive-red-700), var(--primitive-red-600));
+  --color-on-stamp: light-dark(var(--primitive-newsprint-50), var(--primitive-night-900));
 
   /* Interaction */
-  --color-link: var(--primitive-ink-900);
-  --color-link-hover: var(--primitive-red-600);
-  --color-focus: var(--primitive-red-600);
-  --color-selection: var(--primitive-newsprint-400);
+  --color-link: light-dark(var(--primitive-ink-900), var(--primitive-newsprint-200));
+  --color-link-hover: light-dark(var(--primitive-red-600), var(--primitive-red-400));
+  --color-focus: light-dark(var(--primitive-red-600), var(--primitive-red-400));
+  --color-selection: light-dark(var(--primitive-newsprint-400), var(--primitive-night-600));
 
   /* Type roles */
   --font-text: var(--primitive-family-text);
@@ -104,8 +108,8 @@
   --filter-ink: var(--primitive-filter-bleed);        /* ragged edges on display type */
   --ink-spread: var(--primitive-stroke-50);           /* dot gain: every letter spreads a hair into the paper */
   --opacity-halftone: var(--primitive-opacity-halftone);
-  --color-photo-plate: var(--primitive-ink-900);
-  --color-halftone: var(--primitive-ink-900);
+  --color-photo-plate: light-dark(var(--primitive-ink-900), var(--primitive-night-900));
+  --color-halftone: light-dark(var(--primitive-ink-900), var(--primitive-night-900));
   --blend-photo: var(--primitive-blend-screen);
   --blend-grain: var(--primitive-blend-multiply);
   --blend-stamp: var(--primitive-blend-multiply);
@@ -117,35 +121,20 @@
   --layer-skip-link: var(--primitive-z-200);
 }
 
-/* The evening edition. Same roles, night paper, light ink. */
+/* The edition. Follows the system unless the reader chose one from the edition line. */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* Evening-edition blend modes: ink on night paper screens where day ink multiplies. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --color-paper: var(--primitive-night-900);
-    --color-paper-raised: var(--primitive-night-800);
-    --color-paper-tint: var(--primitive-night-700);
-    --color-paper-deep: var(--primitive-night-600);
-
-    --color-ink: var(--primitive-newsprint-200);
-    --color-ink-soft: var(--primitive-newsprint-400);
-    --color-ink-muted: var(--primitive-ink-300);
-    --color-ink-faint: var(--primitive-ink-500);
-
-    --color-rule: var(--primitive-newsprint-200);
-    --color-rule-soft: var(--primitive-night-600);
-
-    --color-stamp: var(--primitive-red-400);
-    --color-stamp-deep: var(--primitive-red-600);
-    --color-on-stamp: var(--primitive-night-900);
-
-    --color-link: var(--primitive-newsprint-200);
-    --color-link-hover: var(--primitive-red-400);
-    --color-focus: var(--primitive-red-400);
-    --color-selection: var(--primitive-night-600);
-
-    --color-photo-plate: var(--primitive-night-900);
-    --color-halftone: var(--primitive-night-900);
+  :root:not([data-theme="light"]) {
     --blend-photo: var(--primitive-blend-normal);
     --blend-grain: var(--primitive-blend-screen);
     --blend-stamp: var(--primitive-blend-normal);
   }
+}
+:root[data-theme="dark"] {
+  --blend-photo: var(--primitive-blend-normal);
+  --blend-grain: var(--primitive-blend-screen);
+  --blend-stamp: var(--primitive-blend-normal);
 }
