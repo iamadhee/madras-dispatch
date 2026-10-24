@@ -17,9 +17,10 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 ---
 <section class="daily" data-daily data-epoch={epoch} data-share-url={shareUrl} data-paper={paperName}>
   <header class="head">
-    <h2 class="title">{title}</h2>
-    <p class="edition label">No. <span data-day>1</span></p>
-    <p class="how">Guess the word in six tries. Solid ink means right letter, right place. Red means right letter, wrong place.</p>
+    <p class="edition label">No. <span data-day>1</span> · Set by the editor</p>
+    <h2 class="title ink-display">{title}</h2>
+    <p class="how">Guess the word in six tries. Solid ink: right letter, right place. Red: right letter, wrong place. Hatched: not in the word.</p>
+    <p class="solution label" data-solution hidden>Solution to No. <span data-prev-day></span>: <span class="word" data-prev></span></p>
   </header>
 
   <div class="board" data-board role="group" aria-label="Guesses">
@@ -32,6 +33,7 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 
   <p class="message" data-message aria-live="assertive"></p>
 
+  <p class="case label">Type case</p>
   <div class="keys" data-keys aria-label="Keyboard">
     {rows.map((row, i) => (
       <div class="keyrow">
@@ -195,13 +197,16 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
     state.guesses.forEach((g, r) => paintRow(r, g, score(g)));
     paintKeys();
     if (state.status !== "playing") finish();
-    if (yesterday && state.status === "playing" && state.guesses.length === 0) say(`Yesterday's word was ${yesterday}.`, true);
+    if (yesterday) { $("[data-prev-day]").textContent = String(dayNumber - 1); $("[data-prev]").textContent = yesterday; $<HTMLElement>("[data-solution]").hidden = false; }
   }
 </script>
 
 <style>
-  .daily { display: flex; flex-direction: column; gap: var(--space-stack-loose); align-items: center; }
-  .head { text-align: center; display: flex; flex-direction: column; gap: var(--space-inline); border-top: var(--rule-heavy); border-bottom: var(--rule-hairline); padding: var(--space-stack) 0; width: 100%; }
+  /* The puzzle is boxed like any printed puzzle: heavy rule on top, hairlines round. */
+  .daily { display: flex; flex-direction: column; gap: var(--space-stack-loose); align-items: center; border: var(--rule-hairline); border-top: var(--rule-heavy); padding: var(--space-stack-loose); }
+  .head { text-align: center; display: flex; flex-direction: column; gap: var(--space-inline); border-bottom: var(--rule-hairline); padding-bottom: var(--space-stack); width: 100%; }
+  .solution { color: var(--color-ink-soft); margin-top: var(--space-inline); }
+  .solution .word { color: var(--color-ink); letter-spacing: var(--tracking-caps-wide); }
   .title {
     font-family: var(--font-headline);
     font-size: var(--text-headline-secondary);
@@ -217,8 +222,7 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
     aspect-ratio: 1;
     display: grid;
     place-items: center;
-    border: var(--rule-medium);
-    border-color: var(--color-rule-soft);
+    border: var(--rule-hairline);
     background: var(--color-paper-raised);
     font-family: var(--font-headline);
     font-size: var(--text-headline-secondary);
@@ -227,8 +231,10 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
     text-transform: uppercase;
     transition: background var(--motion-fast) ease, border-color var(--motion-fast) ease, color var(--motion-fast) ease;
   }
-  .tile[data-filled] { border-color: var(--color-ink); }
-  .tile[data-state="absent"] { background: var(--color-paper-tint); border-color: var(--color-paper-tint); color: var(--color-ink-muted); }
+  /* A letter typed but not yet checked is pencil: the text face, italic, soft ink. Checked letters are printed. */
+  .tile[data-filled]:not([data-state]) { font-family: var(--font-text); font-style: italic; font-weight: var(--weight-emphasis); color: var(--color-ink-soft); }
+  /* Not in the word: the hatched square of a printed puzzle. */
+  .tile[data-state="absent"] { background: repeating-linear-gradient(45deg, var(--color-rule-soft) 0 1px, var(--color-paper-tint) 1px 4px); color: var(--color-ink-muted); }
   .tile[data-state="present"] { background: var(--color-stamp); border-color: var(--color-stamp); color: var(--color-on-stamp); }
   .tile[data-state="correct"] { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-paper); }
   .tile.flip { animation: flip var(--motion-slow) ease both; animation-delay: calc(var(--delay) * 120ms); }
@@ -238,6 +244,7 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
 
   .message { min-height: 1.5em; font-size: var(--text-compact); font-style: italic; color: var(--color-ink-soft); text-align: center; }
 
+  .case { color: var(--color-ink-muted); margin-bottom: calc(-1 * var(--space-stack)); }
   .keys { display: flex; flex-direction: column; gap: var(--space-inline-loose); width: min(100%, 30rem); }
   .keyrow { display: flex; justify-content: center; gap: var(--space-inline); }
   .key {
@@ -258,7 +265,7 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
   }
   .key.wide { flex: 1.6 1 0; max-width: 4.6rem; font-size: var(--text-fine); letter-spacing: var(--tracking-caps); }
   .key:hover { background: var(--color-paper-tint); }
-  .key[data-state="absent"] { background: var(--color-paper-tint); color: var(--color-ink-soft); border-color: var(--color-paper-tint); }
+  .key[data-state="absent"] { background: repeating-linear-gradient(45deg, var(--color-rule-soft) 0 1px, var(--color-paper-tint) 1px 4px); color: var(--color-ink-soft); }
   .key[data-state="present"] { background: var(--color-stamp); color: var(--color-on-stamp); border-color: var(--color-stamp); }
   .key[data-state="correct"] { background: var(--color-ink); color: var(--color-paper); border-color: var(--color-ink); }
 
@@ -280,5 +287,5 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
   @media (prefers-reduced-motion: reduce) {
     .tile.flip, .row.shake { animation: none; }
   }
-  @media print { .keys, .actions { display: none; } }
+  @media print { .keys, .case, .actions { display: none; } }
 </style>
