@@ -264,6 +264,11 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
     transition: background var(--motion-fast) ease;
   }
   .key.wide { flex: 1.6 1 0; max-width: 4.6rem; font-size: var(--text-fine); letter-spacing: var(--tracking-caps); }
+  /* On a phone the type case is ten keys across: tighter gaps, and Enter and Delete take two key widths without tracking. */
+  @media (max-width: 30rem) {
+    .keyrow { gap: var(--space-hair); }
+    .key.wide { flex-grow: 2; letter-spacing: 0; }
+  }
   .key:hover { background: var(--color-paper-tint); }
   .key[data-state="absent"] { background: repeating-linear-gradient(45deg, var(--color-rule-soft) 0 1px, var(--color-paper-tint) 1px 4px); color: var(--color-ink-soft); }
   .key[data-state="present"] { background: var(--color-stamp); color: var(--color-on-stamp); border-color: var(--color-stamp); }
