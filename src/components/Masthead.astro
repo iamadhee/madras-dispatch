@@ -82,7 +82,7 @@ const wx = await weather();
 
   .plate {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-columns: var(--width-ear) minmax(0, 1fr) var(--width-ear);
     align-items: end;
     gap: var(--space-gutter);
     padding-bottom: var(--space-stack);
@@ -90,10 +90,11 @@ const wx = await weather();
   }
   .ear-left { justify-self: start; }
   .ear-right { justify-self: end; }
-  .name { text-align: center; min-width: 0; }
+  .name { text-align: center; min-width: 0; container-type: inline-size; }
   .nameplate {
     font-family: var(--font-nameplate);
-    font-size: var(--text-nameplate);
+    /* Never wider than the space between the ears: the blackletter runs about nine and a half ems. */
+    font-size: min(var(--text-nameplate), 10.5cqw);
     line-height: var(--leading-solid);
     letter-spacing: var(--tracking-text);
     white-space: nowrap;

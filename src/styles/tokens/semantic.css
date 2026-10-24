@@ -91,6 +91,7 @@
   --width-page: var(--primitive-width-page);
   --measure-body: var(--primitive-width-measure);
   --measure-narrow: var(--primitive-width-measure-narrow);
+  --width-ear: var(--primitive-width-ear);                    /* the boxes either side of the nameplate */
   --measure-column: var(--primitive-width-measure-column);   /* narrowest a text column may be */
 
   /* Texture and photographs */
