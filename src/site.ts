@@ -29,6 +29,11 @@ export const site = {
     location: "Chennai, India",
     email: "adheeban.manoharan@gmail.com",
   },
+  /** Letters from the coupon go through Web3Forms. The access key is public by design: it only lets a form post to this inbox. */
+  letters: {
+    endpoint: "https://api.web3forms.com/submit",
+    accessKey: "3b28e0b9-ab29-421b-9a3a-86025f0495d0",
+  },
   social: {
     github: { label: "GitHub", handle: "iamadhee", url: "https://github.com/iamadhee" },
     linkedin: { label: "LinkedIn", handle: "adheeban-manoharan", url: "https://linkedin.com/in/adheeban-manoharan" },

@@ -1,0 +1,98 @@
+---
+/**
+ * A letter to the editor, filled in on the coupon. The blanks are real fields, written in pencil.
+ * It posts to Web3Forms; with scripts off the browser posts the form itself.
+ */
+import { site } from "../site";
+---
+<form class="letter" action={site.letters.endpoint} method="post" data-letter>
+  <input type="hidden" name="access_key" value={site.letters.accessKey} />
+  <input type="hidden" name="subject" value={`Letter to the editor of ${site.paper.name}`} />
+  <input type="hidden" name="from_name" value={site.paper.name} />
+  <input type="checkbox" name="botcheck" class="trap" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <p>Dear Editor,</p>
+  <p>
+    <label for="letter-message">I read your paper and I would like to</label>
+    <textarea id="letter-message" name="message" rows="3" required maxlength="4000"></textarea>
+  </p>
+  <p>
+    <label for="letter-place">I am writing from</label>{" "}
+    <input id="letter-place" class="blank" name="place" autocomplete="address-level2" />,{" "}
+    <label for="letter-name">and my name is</label>{" "}
+    <input id="letter-name" class="blank" name="name" autocomplete="name" required />.
+  </p>
+  <p>
+    <label for="letter-email">Reply to me at</label>{" "}
+    <input id="letter-email" class="blank wide" type="email" name="email" autocomplete="email" required />.
+  </p>
+  <p class="post">
+    <button type="submit" class="send label">Post this coupon</button>
+    <span class="status" data-status role="status"></span>
+  </p>
+</form>
+
+<script>
+  for (const form of document.querySelectorAll<HTMLFormElement>("[data-letter]")) {
+    const status = form.querySelector<HTMLElement>("[data-status]")!;
+    const send = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      send.disabled = true;
+      status.textContent = "Posting.";
+      try {
+        const res = await fetch(form.action, { method: "POST", headers: { Accept: "application/json" }, body: new FormData(form) });
+        const data = (await res.json()) as { success?: boolean; message?: string };
+        if (!res.ok || !data.success) throw new Error(data.message ?? `HTTP ${res.status}`);
+        form.reset();
+        status.textContent = "Received. The editor reads every letter.";
+      } catch {
+        status.textContent = "The coupon did not reach the desk. Try again, or write by email.";
+      } finally {
+        send.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .letter > * + * { margin-top: var(--space-stack); }
+  .trap { position: absolute; left: -100vw; }
+
+  /* The blanks: a hairline to write on, filled in pencil. */
+  .blank, textarea {
+    font-family: var(--font-text);
+    font-style: italic;
+    font-size: inherit;
+    color: var(--color-ink);
+    background: transparent;
+    border: 0;
+    border-bottom: var(--rule-hairline);
+    border-radius: 0;
+    padding: 0 var(--space-hair);
+  }
+  .blank { width: 9rem; max-width: 100%; }
+  .blank.wide { width: 15rem; }
+  textarea {
+    display: block;
+    width: 100%;
+    margin-top: var(--space-inline);
+    border-bottom: 0;
+    resize: vertical;
+    line-height: var(--leading-body);
+    /* Ruled lines, one for every line of writing. */
+    background: repeating-linear-gradient(to bottom, transparent 0 calc(var(--leading-body) * 1em - var(--stroke-hairline)), var(--color-rule) calc(var(--leading-body) * 1em - var(--stroke-hairline)) calc(var(--leading-body) * 1em));
+  }
+
+  .post { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-stack); }
+  .send {
+    color: var(--color-paper);
+    background: var(--color-ink);
+    border: var(--rule-hairline);
+    padding: var(--space-inline-loose) var(--space-stack-loose);
+    cursor: pointer;
+  }
+  .send:hover { background: var(--color-stamp); border-color: var(--color-stamp); }
+  .send:disabled { opacity: 0.6; cursor: progress; }
+  .status { font-style: italic; color: var(--color-ink-soft); }
+</style>
