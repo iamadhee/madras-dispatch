@@ -119,8 +119,14 @@ code, kbd {
   filter: var(--filter-ink);
 }
 
+/* Turning a page. The browser keeps the old page until the new one is ready, then fades between them.
+   The masthead is named in its component, so it holds still while the page beneath it changes. */
+@view-transition { navigation: auto; }
+::view-transition-group(*) { animation-duration: var(--motion-fast); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; animation: none !important; }
+  @view-transition { navigation: none; }
 }
 
 @media print {
