@@ -5,11 +5,12 @@ import { site } from "../site";
 interface Props {
   title?: string;
   items?: ReadonlyArray<{ name: string; page: string; slug: string }>;
+  titleAs?: "h2" | "h3";
 }
-const { title = "Inside", items = site.sections.filter((s) => s.slug !== "/") } = Astro.props;
+const { title = "Inside", items = site.sections.filter((s) => s.slug !== "/"), titleAs: Title = "h3" } = Astro.props;
 ---
 <nav class="index" aria-label={title}>
-  <h3 class="index-title label-box">{title}</h3>
+  <Title class="index-title label-box">{title}</Title>
   <ol class="list">
     {items.map((item) => (
       <li class="row">
