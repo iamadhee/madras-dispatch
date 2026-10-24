@@ -11,6 +11,9 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* A component that sets display must not undo the hidden attribute. */
+[hidden] { display: none !important; }
+
 html {
   color-scheme: light dark;
   background: var(--color-paper);
