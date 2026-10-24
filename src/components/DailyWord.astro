@@ -126,8 +126,9 @@ const rows = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
         if (states) {
           if (animate) t.classList.add("flip");
           t.dataset.state = states[i];
+          t.setAttribute("role", "img"); // a label on a plain div is not read
           t.setAttribute("aria-label", `${word[i]}, ${states[i] === "correct" ? "right place" : states[i] === "present" ? "wrong place" : "not in word"}`);
-        } else { delete t.dataset.state; t.removeAttribute("aria-label"); }
+        } else { delete t.dataset.state; t.removeAttribute("role"); t.removeAttribute("aria-label"); }
       });
     };
 
