@@ -11,7 +11,8 @@ export const site = {
     name: "The Madras Dispatch",
     tagline: "All the code that's fit to ship.",
     url: "https://adheeban.com",
-    city: "Chennai",
+    /** The paper calls the city by its old name. Facts about employers and schools keep the current one. */
+    city: "Madras",
     /** Printed below the masthead on inner pages. */
     publisher: "Adheeban Manoharan",
     /** Used to number the volume. Volume I began this year. */
@@ -61,7 +62,7 @@ export const site = {
     epoch: "2026-10-24",
   },
   weather: {
-    place: "Chennai",
+    place: "Madras",
     coords: { lat: 13.0827, lon: 80.2707, timezone: "Asia/Kolkata" },
     summary: "Hot and humid. Chance of rain, 40 per cent. Chance of a deploy, moderate.",
     high: "31°",

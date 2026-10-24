@@ -52,4 +52,4 @@ Read `DESIGN.md` first. The design is three layers, and `npm run check` fails th
 
 `public/_headers` sets long cache lifetimes for hashed assets. No functions, no adapter. One optional environment variable: `GITHUB_TOKEN`, which raises the GitHub rate limit when the build fetches star counts.
 
-The build also fetches today's Chennai weather from Open-Meteo. Both fetches fall back to the content files when offline.
+The build also fetches today's Madras weather from Open-Meteo. Both fetches fall back to the content files when offline.
