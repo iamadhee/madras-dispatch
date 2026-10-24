@@ -43,6 +43,7 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Ast
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="" />
     <link rel="alternate" type="application/rss+xml" title={`${site.paper.name} wire`} href="/rss.xml" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.paper.name} />
@@ -98,6 +99,13 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Ast
   for (const el of document.querySelectorAll<HTMLElement>(".stamp[data-tilt]")) {
     el.style.setProperty("--stamp-tilt", `${(-7 + Math.random() * 4).toFixed(1)}deg`);
   }
+
+  // The browser's own toolbar takes the colour of the paper, in either edition.
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const paint = () => { if (themeColor) themeColor.content = getComputedStyle(document.body).backgroundColor; };
+  paint();
+  new MutationObserver(paint).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paint);
 </script>
 
 <style>
