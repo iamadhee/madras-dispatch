@@ -70,7 +70,9 @@ No two impressions are alike. On every load the page re-seeds the four textures 
 
 ## Layout
 
-Six columns on desktop, three on tablet, one on phones. `Grid` and `Col` build it. Column rules are hairlines drawn by `Col rule`. On narrow screens the rule becomes a top rule.
+Six columns on desktop, three on tablet, one on phones. `Grid` and `Col` build it. Column rules are hairlines drawn by `Col rule`. On narrow screens the rule becomes a top rule. Cells align to the top; `Grid stretch` makes a row of boxed cells, such as display advertisements, end level.
+
+The section strip runs in one row while it fits. Below that it is a ruled grid, four across or two on phones, so no row starts with a stray rule.
 
 Text columns inside a story (`Prose columns`) are never narrower than `--measure-column`; a cell too narrow for two columns gets one. Paragraphs split at the column break, as they do in print. A picture placed first inside `Prose` heads the first column and the copy flows round it into the next, so the story and its photograph end level. A story that finishes on the page ends with an end mark (`Prose end`); a story that continues gets a `JumpLine` instead. Stories stack with one hairline between them and equal space above and below it.
 
@@ -114,14 +116,14 @@ Structure is drawn with rules, not whitespace. The kinds, in order of weight: so
 | `Coupon` | Clip-and-send contact box | Once |
 | `Stamp` | Red rubber stamp | At most once per page |
 | `Ear` | Boxes either side of the nameplate | Weather and price |
-| `Rule`, `Grid`, `Col`, `Stack`, `Story` | Structure | Everywhere |
+| `Rule`, `Grid`, `Col`, `Stack`, `Story` | Structure | Everywhere; `Grid stretch` for boxed cells that must end level |
 | `stylebook/*` | Swatch, Specimen, Spec | The Style Book page only |
 
 ## What the build fetches
 
 | Data | Source | Fallback |
 |---|---|---|
-| Weather in the ear | Open-Meteo, once per build | The static line in `site.ts` |
+| Weather in the ear, sunrise and sunset in the front-page almanac | Open-Meteo, once per build | The static line in `site.ts`, without the almanac |
 | Star counts | GitHub API, once per repository; `GITHUB_TOKEN` raises the rate limit | The count in the content file |
 | Share image | `public/og.jpg`, a 1200×630 capture of the front page | Regenerate after a masthead change |
 
@@ -131,4 +133,6 @@ Every picture goes through `Plate`. Sources so far: the editor's photograph, scr
 
 ## Motion and accessibility
 
-No page-load animation. Links change colour on hover. Focus rings are dashed in the spot colour. `prefers-reduced-motion` turns off the one transition. The print stylesheet removes the grain and the halftone.
+No page-load animation. Links change colour on hover. Focus rings are dashed in the spot colour. `prefers-reduced-motion` turns off the one transition. Every `aside` is named by its title.
+
+On paper the grain, the halftone and the section links go. A page break never splits a table, a picture or a box, and never leaves a heading at the foot of a page.
