@@ -108,8 +108,9 @@ const wx = await weather();
     padding-bottom: var(--space-stack);
     border-bottom: var(--rule-double);
   }
-  .ear-left { justify-self: start; }
-  .ear-right { justify-self: end; }
+  /* Both ears fill their column and the height of the nameplate, so they print as a matched pair. */
+  .ear-left, .ear-right { align-self: stretch; display: flex; }
+  .ear-left > :global(.ear), .ear-right > :global(.ear) { flex: 1; }
   .name { text-align: center; min-width: 0; container-type: inline-size; }
   .nameplate {
     font-family: var(--font-nameplate);
