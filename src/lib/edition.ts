@@ -50,6 +50,14 @@ export function formatMonthYear(d: Date): string {
   return threeLetters(new Intl.DateTimeFormat("en-GB", { month: "short", year: "numeric", timeZone: "UTC" }).format(d));
 }
 
+const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+
+/** House style: numbers under ten are spelled out in running text. A sentence never starts with a figure. */
+export function inWords(n: number, { start = false } = {}): string {
+  const word = WORDS[n] ?? String(n);
+  return start ? word.charAt(0).toUpperCase() + word.slice(1) : word;
+}
+
 /** Whole years since the career start date. */
 export function yearsSince(iso: string, now: Date = new Date()): number {
   const start = new Date(iso);

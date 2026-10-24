@@ -18,7 +18,7 @@ import Meta from "../components/Meta.astro";
 import Rule from "../components/Rule.astro";
 import Classified from "../components/Classified.astro";
 import { site } from "../site";
-import { yearsSince, formatShort, formatMonthYear } from "../lib/edition";
+import { yearsSince, inWords, formatShort, formatMonthYear } from "../lib/edition";
 import photo from "../assets/adheeban.jpg";
 import harbour from "../assets/archive/madras-harbour-1880.jpg";
 import { weather } from "../lib/weather";
@@ -31,16 +31,17 @@ const posts = (await getCollection("posts")).sort((a, b) => b.data.date.getTime(
 const wirePost = posts.find((p) => p.data.source === "devto")!;
 const editorsNote = posts.find((p) => p.data.source === "local")!;
 const years = yearsSince(site.person.careerStart);
+const Years = inWords(years, { start: true });
 const wx = await weather();
 const starCounts = await Promise.all(projects.map((p) => stars(p.data.repo, p.data.stars)));
 const influencerStars = (await stars("https://github.com/iamadhee/llm-influencer", 39)) ?? 39;
-const description = `${site.person.name}, software engineer in ${site.paper.city}. ${years} years from a statistics degree to backend systems, reported as a daily newspaper.`;
+const description = `${site.person.name}, software engineer in ${site.paper.city}. ${Years} years from a statistics degree to backend systems, reported as a daily newspaper.`;
 ---
 <Base title="Front Page" description={description} current="/" masthead="front">
   <Stack gap="loose">
     <Headline
       level="banner"
-      deck={`Adheeban Manoharan came to software from a statistics degree with no plan and a lot of questions. ${years} years on, the questions are blog posts, the plan is still loose, and the code ships.`}
+      deck={`Adheeban Manoharan came to software from a statistics degree with no plan and a lot of questions. ${Years} years on, the questions are blog posts, the plan is still loose, and the code ships.`}
     >
       Man Learns Software in Public, Keeps Every Note
     </Headline>
@@ -60,7 +61,7 @@ const description = `${site.person.name}, software engineer in ${site.paper.city
               credit="Photograph: supplied"
               loading="eager"
             />
-            <p>In November 2020 a final-year statistics student at Madras Christian College took an internship at a software company and did not tell anyone how little of it he understood. {years} years later Adheeban Manoharan builds backend systems at {site.person.employer}, and has written down most of what he learned on the way, in case the next person is as lost as he was.</p>
+            <p>In November 2020 a final-year statistics student at Madras Christian College took an internship at a software company and did not tell anyone how little of it he understood. {Years} years later Adheeban Manoharan builds backend systems at {site.person.employer}, and has written down most of what he learned on the way, in case the next person is as lost as he was.</p>
             <p>The habit started early. His first posts on Dev.to, in 2022, were not tutorials. One was titled "Your first job will scare you", and it was written by someone whose first job was scaring him. Fifty readers pressed the button that means thank you.</p>
             <p>The tutorials came after: cron, tmux, MongoDB, Linux. Then a run of posts in 2023 on language models, written while the rest of the industry was still deciding what to think, the most read of which taught a chatbot to answer questions about your own files. Late that year he went back to fundamentals and wrote a series on linked lists and sorting, because a statistics degree had skipped them and he did not want to be the only one who noticed.</p>
             <p>One of his side projects is a playground for designing wristwatches, which he describes as research. Two others are small websites: one that teaches prompting by marking your attempts, and one that explains the hard parts of technology in five minutes.</p>
