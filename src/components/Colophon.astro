@@ -12,7 +12,7 @@ const socials = Object.values(site.social);
       <h2 class="heading label">Ownership</h2>
       <p>{site.paper.name} is written, edited, typeset and published by {site.paper.publisher} in {site.paper.city}. No wire service was harmed. All stories concern one person, who is also the editor, which keeps the corrections page short.</p>
     </section>
-    <section class="col">
+    <section class="col sections">
       <h2 class="heading label">Sections</h2>
       <ul class="list">
         {site.sections.map((s) => <li><a href={s.slug}>{s.name}</a> <span class="page">{s.page}</span></li>)}
@@ -82,5 +82,10 @@ const socials = Object.values(site.social);
     .columns { grid-template-columns: 1fr; }
     .col + .col { border-left: 0; padding-left: 0; border-top: var(--rule-hairline); padding-top: var(--space-stack-loose); }
   }
-  @media print { .barcode { display: none; } }
+  /* On paper the section links go nowhere. Drop them and keep the other three columns side by side. */
+  @media print {
+    .barcode, .sections { display: none; }
+    .columns { grid-template-columns: 2fr 1fr 1fr; }
+    .col + .col { border-top: 0; padding-top: 0; border-left: var(--rule-hairline); padding-left: var(--space-gutter); }
+  }
 </style>
