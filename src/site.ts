@@ -26,7 +26,7 @@ export const site = {
     employerUrl: "https://kissflow.com",
     careerStart: "2021-07-01",
     location: "Chennai, India",
-    email: "caeser.alfred@gmail.com",
+    email: "adheeban.manoharan@gmail.com",
   },
   social: {
     github: { label: "GitHub", handle: "iamadhee", url: "https://github.com/iamadhee" },
