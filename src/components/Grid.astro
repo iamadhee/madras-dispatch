@@ -1,14 +1,16 @@
 ---
 /**
  * The broadsheet grid. Six columns on desktop, three on tablet, one on phones.
- * Children must be <Col>.
+ * Children must be <Col>. `stretch` makes every cell in a row as tall as the tallest,
+ * for boxed cells that must end level, such as display advertisements.
  */
 interface Props {
   columns?: 2 | 3 | 4 | 6;
+  stretch?: boolean;
 }
-const { columns = 6 } = Astro.props;
+const { columns = 6, stretch = false } = Astro.props;
 ---
-<div class="grid" style={`--grid-columns: ${columns}`}><slot /></div>
+<div class="grid" style={`--grid-columns: ${columns}`} data-stretch={stretch ? "" : undefined}><slot /></div>
 
 <style>
   .grid {
@@ -18,6 +20,7 @@ const { columns = 6 } = Astro.props;
     row-gap: var(--space-story);
     align-items: start;
   }
+  .grid[data-stretch] { align-items: stretch; }
   @media (max-width: 56rem) {
     .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }

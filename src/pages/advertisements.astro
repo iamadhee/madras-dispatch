@@ -18,7 +18,7 @@ const description = `Display notices for the other titles from this press: ${nam
   standfirst="Display notices for the other titles from this press. Each one runs on a server the editor pays for, so each one is still open."
 >
   <Stack gap="story">
-    <Grid>
+    <Grid stretch>
       {site.sites.map((s, i) => (
         <Col span={2} rule={i > 0}>
           <Advert name={s.name} tagline={s.tagline} host={s.host} url={s.url} status={s.status} image={s.image} />
