@@ -49,11 +49,13 @@ const { name, tagline, host, url, status, image } = Astro.props;
     height: 100%;
     border: var(--rule-hairline);
     padding: var(--space-stack-loose) var(--space-stack-loose) var(--space-stack);
+    container-type: inline-size;
   }
   .line { color: var(--color-stamp); }
   .name {
     font-family: var(--font-headline);
-    font-size: var(--text-headline-secondary);
+    /* Ten tracked capitals run about nine and a half ems: never wider than the frame. */
+    font-size: min(var(--text-headline-secondary), 10cqw);
     font-weight: var(--weight-headline);
     line-height: var(--leading-headline);
     letter-spacing: var(--tracking-caps);
@@ -79,6 +81,7 @@ const { name, tagline, host, url, status, image } = Astro.props;
     text-wrap: balance;
     max-width: var(--measure-narrow);
   }
-  .call { margin-top: auto; color: var(--color-ink-soft); }
+  /* The longest host runs about twenty-two ems in tracked capitals. */
+  .call { margin-top: auto; color: var(--color-ink-soft); font-size: min(var(--text-small), 4.4cqw); }
   .advert:hover .call { color: var(--color-link-hover); }
 </style>
