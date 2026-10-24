@@ -19,7 +19,8 @@ interface Props {
 }
 const { title, description, current, masthead = "compact" } = Astro.props;
 const fullTitle = current === "/" ? site.paper.name : `${title} | ${site.paper.name}`;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// The file build format adds ".html" to the path; the host serves clean URLs, as the sitemap lists them.
+const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Astro.site);
 ---
 <!doctype html>
 <html lang="en">
