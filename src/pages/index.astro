@@ -123,7 +123,7 @@ const description = `${site.person.name}, software engineer in ${site.paper.city
             <Headline level="brief" kicker={i === 0 ? "Technology" : undefined} deck={p.data.deck} href={`/technology#${p.id}`}>
               {p.data.headline}
             </Headline>
-            <Meta items={[String(p.data.year), site.statusLabel[p.data.status], starCounts[i] ? `${starCounts[i]} stars` : undefined]} />
+            <Meta items={[String(p.data.year), site.statusLabel[p.data.status], starCounts[i] ? `${starCounts[i]} ${starCounts[i] === 1 ? "star" : "stars"}` : undefined]} />
           </Story>
         ))}
         <JumpLine href="/technology" page="C1" />

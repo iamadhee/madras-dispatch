@@ -55,7 +55,7 @@ const statusWord = site.statusLabel;
             {entry.data.headline}
           </Headline>
           <Byline author="Technology Desk" date={String(entry.data.year)} />
-          <Meta items={[statusWord[entry.data.status], count ? `${count} stars` : undefined, entry.data.tech.join(", ")]} />
+          <Meta items={[statusWord[entry.data.status], count ? `${count} ${count === 1 ? "star" : "stars"}` : undefined, entry.data.tech.join(", ")]} />
           <Prose columns={2} dropcap end>
             {pictures[entry.id]?.variant === "plate" && (
               <Figure src={pictures[entry.id].src} alt={pictures[entry.id].alt} caption={pictures[entry.id].caption} credit={pictures[entry.id].credit} width={640} height={400} position="top" />
