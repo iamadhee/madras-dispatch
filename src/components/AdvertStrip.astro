@@ -1,0 +1,28 @@
+---
+/** The strip of small display advertisements at the foot of the front page: every title from this press, then a jump to page G1. */
+import Advert from "./Advert.astro";
+import JumpLine from "./JumpLine.astro";
+import { site } from "../site";
+---
+<section class="strip" aria-labelledby="strip-title">
+  <h2 id="strip-title" class="title label-box">Advertisements</h2>
+  <div class="row">
+    {site.sites.map((s) => (
+      <Advert name={s.name} tagline={s.tagline} host={s.host} url={s.url} status={s.status} image={s.image} compact />
+    ))}
+  </div>
+  <JumpLine href="/advertisements" page="G1" />
+</section>
+
+<style>
+  .title { border-bottom: var(--rule-hairline); padding-bottom: var(--space-inline); margin-bottom: var(--space-stack); }
+  /* Four across on a broadsheet, two by two on a tablet, one above another on a phone. */
+  .row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-gutter);
+    margin-bottom: var(--space-inline-loose);
+  }
+  @media (max-width: 56rem) { .row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 30rem) { .row { grid-template-columns: minmax(0, 1fr); } }
+</style>

@@ -104,7 +104,8 @@ Structure is drawn with rules, not whitespace. The kinds, in order of weight: so
 | `PullQuote` | Lifted quotation | Quote the subject |
 | `Plate` | Any picture, screened to ink; colour bleeds in on hover | Never bare in a story; wrap in `Figure` |
 | `Figure` | A plate with caption and credit; `mug` floats a portrait into text | Credit is mandatory |
-| `Advert` | Display advertisement: double-ruled frame, centred lines, one link | Advertisements page only |
+| `Advert` | Display advertisement: double-ruled frame, centred lines, one link | Full size on the Advertisements page; `compact`, without the picture, in the front-page strip |
+| `AdvertStrip` | Every title from this press as a compact advert, then a jump to G1 | Front page foot, once |
 | `DailyWord` | The Daily Five: a word a day, six guesses, streaks in the browser | Puzzles page |
 | `PrintLink` | "Print this edition" | Colophon |
 | `Box` | Ruled, tinted, or dashed sidebar | Ruled for facts, tinted for asides |

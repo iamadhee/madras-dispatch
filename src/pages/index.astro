@@ -15,6 +15,7 @@ import Ledger from "../components/Ledger.astro";
 import JumpLine from "../components/JumpLine.astro";
 import IndexBox from "../components/IndexBox.astro";
 import Support from "../components/Support.astro";
+import AdvertStrip from "../components/AdvertStrip.astro";
 import Meta from "../components/Meta.astro";
 import Rule from "../components/Rule.astro";
 import Classified from "../components/Classified.astro";
@@ -169,6 +170,10 @@ const description = `${site.person.name}, software engineer in ${site.paper.city
     />
 
     <Rule kind="double" space="none" />
+
+    <AdvertStrip />
+
+    <Rule kind="heavy" space="none" />
 
     <Grid columns={3}>
       <Col span={1}>
