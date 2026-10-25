@@ -20,7 +20,7 @@ const description = `Display notices for the other titles from this press: ${nam
   <Stack gap="story">
     <Grid stretch>
       {site.sites.map((s, i) => (
-        <Col span={2} rule={i > 0}>
+        <Col span={3} rule={i % 2 === 1}>
           <Advert name={s.name} tagline={s.tagline} host={s.host} url={s.url} status={s.status} image={s.image} />
         </Col>
       ))}

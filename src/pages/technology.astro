@@ -21,6 +21,7 @@ import docify from "../assets/projects/docify.png";
 import promptster from "../assets/sites/promptster.jpg";
 import tldr from "../assets/sites/tldr.jpg";
 import twp from "../assets/sites/twp.jpg";
+import tenure from "../assets/sites/tenure.jpg";
 
 /** Pictures filed with each story. Mugshots float into the text; plates head the first column of it. */
 const pictures: Record<string, { src: ImageMetadata; alt: string; caption: string; credit: string; variant: "plate" | "mug" }> = {
@@ -29,6 +30,7 @@ const pictures: Record<string, { src: ImageMetadata; alt: string; caption: strin
   promptster: { src: promptster, alt: "Promptster's home page, headed 'Get AI to build what you actually meant'", caption: "Promptster on opening day. Three paths, no account, instant marks.", credit: "Screenshot: this paper", variant: "plate" },
   tldr: { src: tldr, alt: "tldr's home page, headed 'The hard parts of tech, five minutes at a time'", caption: "tldr, with its first lesson on IP addresses waiting at the door.", credit: "Screenshot: this paper", variant: "plate" },
   "the-watch-project": { src: twp, alt: "The Watch Project atelier with a round steel watch on a blue dial", caption: "The atelier at The Watch Project, mid-build. Round case, blue dial, steel bracelet.", credit: "Screenshot: this paper", variant: "plate" },
+  tenure: { src: tenure, alt: "Tenure's home page, headed 'How long will your IT job last?', beside a stamp marked 'Not assessed'", caption: "Tenure's application form, before the reader has answered. The stamp waits for a score.", credit: "Screenshot: this paper", variant: "plate" },
 };
 
 const projects = (await getCollection("projects")).sort((a, b) => {
@@ -44,7 +46,7 @@ const statusWord = site.statusLabel;
 ---
 <Section
   section="/technology"
-  description={`Side projects by ${site.person.name}: language-model tools and three small websites.`}
+  description={`Side projects by ${site.person.name}: language-model tools and four small websites.`}
   standfirst="Side projects, open-source tools, and the small websites that keep appearing."
 >
   <Grid>

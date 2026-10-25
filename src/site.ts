@@ -1,6 +1,7 @@
 import promptsterImage from "./assets/sites/promptster.jpg";
 import tldrImage from "./assets/sites/tldr.jpg";
 import twpImage from "./assets/sites/twp.jpg";
+import tenureImage from "./assets/sites/tenure.jpg";
 
 /**
  * Site facts. Edit this file to change who the paper is about.
@@ -50,6 +51,7 @@ export const site = {
     { name: "Promptster", host: "promptster.adheeban.com", url: "https://promptster.adheeban.com", tagline: "Learn to write prompts. Three paths, 31 challenges, instant feedback.", status: "live", image: promptsterImage },
     { name: "tldr", host: "tldr.adheeban.com", url: "https://tldr.adheeban.com", tagline: "The hard parts of tech, five minutes at a time.", status: "live", image: tldrImage },
     { name: "The Watch Project", host: "twp.adheeban.com", url: "https://twp.adheeban.com", tagline: "A playground for watch designs: cases, dials, hands and straps.", status: "live", image: twpImage },
+    { name: "Tenure", host: "tenure.adheeban.com", url: "https://tenure.adheeban.com", tagline: "How long will your IT job last? Fifteen questions, a score out of 100.", status: "live", image: tenureImage },
   ],
   /** Sections of the paper, in print order. `page` is the folio shown on that section's first page. */
   sections: [
