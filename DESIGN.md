@@ -115,6 +115,7 @@ Structure is drawn with rules, not whitespace. The kinds, in order of weight: so
 | `Classified` | Dense notices | Classifieds and the front-page strip |
 | `Coupon` | Clip-and-send contact box | Once |
 | `Letter` | The letter to the editor inside the coupon: real blanks in pencil, posted through Web3Forms | Inside the coupon on the Classifieds page |
+| `Support` | "Support this paper": a ruled notice with one link to buy the editor a coffee | Front page; the price ear carries a short link too |
 | `Stamp` | Red rubber stamp | At most once per page |
 | `Ear` | Boxes either side of the nameplate | Weather and price |
 | `Rule`, `Grid`, `Col`, `Stack`, `Story` | Structure | Everywhere; `Grid stretch` for boxed cells that must end level |

@@ -14,6 +14,7 @@ import Box from "../components/Box.astro";
 import Ledger from "../components/Ledger.astro";
 import JumpLine from "../components/JumpLine.astro";
 import IndexBox from "../components/IndexBox.astro";
+import Support from "../components/Support.astro";
 import Meta from "../components/Meta.astro";
 import Rule from "../components/Rule.astro";
 import Classified from "../components/Classified.astro";
@@ -141,6 +142,9 @@ const description = `${site.person.name}, software engineer in ${site.paper.city
             <Byline author="The Editor" date={formatShort(editorsNote.data.date)} />
             <JumpLine href={`/opinion/${editorsNote.id}`} page="D1" />
           </Story>
+          <Support>
+            <p>This paper charges nothing at the door and carries no advertising it did not build itself. It runs on filter coffee. Readers who want the next edition sooner may buy the editor one.</p>
+          </Support>
           <Box title="Corrections" kind="tinted">
             <p>The first proof of this paper went to press as <em>The Adheeban Times</em>. The editor regrets the name and has changed it. No other edition was printed.</p>
           </Box>

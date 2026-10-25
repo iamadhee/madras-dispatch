@@ -1,0 +1,32 @@
+---
+/** "Support this paper": a ruled notice with one link to pay what you like. */
+import Box from "./Box.astro";
+import { site } from "../site";
+
+interface Props {
+  title?: string;
+}
+const { title = "Support this paper" } = Astro.props;
+const { url, handle } = site.social.coffee;
+---
+<Box title={title} kind="ruled">
+  <slot />
+  <p class="pay">
+    <a class="button label" href={url}>Buy the editor a coffee</a>
+    <span class="host">buymeacoffee.com/{handle}</span>
+  </p>
+</Box>
+
+<style>
+  .pay { display: flex; flex-direction: column; align-items: center; gap: var(--space-inline); text-align: center; }
+  .button {
+    display: inline-block;
+    color: var(--color-paper);
+    background: var(--color-ink);
+    border: var(--rule-hairline);
+    padding: var(--space-inline-loose) var(--space-stack-loose);
+    text-decoration: none;
+  }
+  .button:hover { color: var(--color-paper); background: var(--color-stamp); border-color: var(--color-stamp); }
+  .host { font-size: var(--text-fine); color: var(--color-ink-muted); }
+</style>
