@@ -47,6 +47,7 @@ Newsprint grey, printed black, one spot colour. No cream. No pure black.
 | UnifrakturMaguntia | The nameplate only |
 | Old Standard TT, bold | Headlines, kickers, section names, table headings |
 | Newsreader, variable with optical sizes | Everything you read |
+| Noto Serif Tamil, variable | Tamil text only, set with `lang="ta"` |
 
 Base size 16px, ratio 1.2. Roles run from `--text-fine` (credits) to `--text-nameplate`.
 
@@ -106,6 +107,7 @@ Structure is drawn with rules, not whitespace. The kinds, in order of weight: so
 | `Figure` | A plate with caption and credit; `mug` floats a portrait into text | Credit is mandatory |
 | `Advert` | Display advertisement: double-ruled frame, centred lines, one link | Full size on the Advertisements page; `compact`, without the picture, in the front-page strip |
 | `AdvertStrip` | Every title from this press as a compact advert, then a jump to G1 | Front page foot, once |
+| `Kural` | A Thirukkural couplet in Tamil, two lines as printed, with Thiruvalluvar beside it | Front page foot, once |
 | `DailyWord` | The Daily Five: a word a day, six guesses, streaks in the browser | Puzzles page |
 | `PrintLink` | "Print this edition" | Colophon |
 | `Box` | Ruled, tinted, or dashed sidebar | Ruled for facts, tinted for asides |

@@ -39,6 +39,7 @@
   --font-text: var(--primitive-family-text);
   --font-headline: var(--primitive-family-headline);
   --font-nameplate: var(--primitive-family-blackletter);
+  --font-tamil: var(--primitive-family-tamil);
 
   --text-fine: var(--primitive-size-100);       /* credits, folio detail */
   --text-small: var(--primitive-size-200);      /* captions, meta, nav */

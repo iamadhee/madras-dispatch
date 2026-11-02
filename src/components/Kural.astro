@@ -1,0 +1,74 @@
+---
+/**
+ * A couplet from the Thirukkural, set in Tamil, with Thiruvalluvar beside it.
+ * The two lines keep the break of the original: four words, then three.
+ */
+import Plate from "./Plate.astro";
+import valluvar from "../assets/archive/thiruvalluvar.jpg";
+
+interface Props {
+  number: number;
+  chapter: string;
+  lines: [string, string];
+  gloss: string;
+}
+const { number, chapter, lines, gloss } = Astro.props;
+---
+<section class="kural" aria-labelledby="kural-title">
+  <h2 id="kural-title" class="title label-box" lang="ta">திருக்குறள்</h2>
+  <div class="row">
+    <figure class="valluvar">
+      <Plate src={valluvar} alt="Thiruvalluvar, seated cross-legged on a low dais, with a palm leaf and a stylus" width={360} height={508} />
+      <figcaption class="credit label">Drawing: AranVivek, CC0, Wikimedia Commons</figcaption>
+    </figure>
+    <blockquote class="verse">
+      <p class="lines ink-display" lang="ta">
+        <span class="line">{lines[0]}</span>
+        <span class="line">{lines[1]}</span>
+      </p>
+      <footer class="cite">
+        <span class="source" lang="ta">திருவள்ளுவர், குறள் {number}, {chapter}</span>
+        <span class="gloss">{gloss}</span>
+      </footer>
+    </blockquote>
+  </div>
+</section>
+
+<style>
+  .title { border-bottom: var(--rule-hairline); padding-bottom: var(--space-inline); margin-bottom: var(--space-stack-loose); font-family: var(--font-tamil); letter-spacing: normal; }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+    gap: var(--space-gutter);
+    align-items: center;
+    max-width: 52rem;
+    margin-inline: auto;
+  }
+  .valluvar { display: flex; flex-direction: column; gap: var(--space-inline); }
+  .credit { color: var(--color-ink-muted); font-weight: var(--weight-text); line-height: var(--leading-tight); }
+  .verse { display: flex; flex-direction: column; gap: var(--space-stack); container-type: inline-size; }
+  .lines {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-inline-loose);
+    font-family: var(--font-tamil);
+    /* The first line runs about twenty-five ems of Tamil: it fills the column and never breaks. */
+    font-size: min(var(--text-headline-secondary), 3.6cqw);
+    white-space: nowrap;
+    font-weight: var(--weight-headline);
+    line-height: var(--leading-headline);
+  }
+  /* The second line sits in from the first, the way the couplet is printed. */
+  .line + .line { padding-inline-start: 2em; }
+  .cite { display: flex; flex-direction: column; gap: var(--space-inline); border-top: var(--rule-hairline); padding-top: var(--space-stack); }
+  .source { font-family: var(--font-tamil); font-size: var(--text-small); color: var(--color-ink-soft); }
+  .gloss { font-style: italic; font-size: var(--text-compact); color: var(--color-ink-soft); }
+  /* On a phone the poet stands above the couplet, and a long line breaks at its middle word. */
+  @media (max-width: 36rem) {
+    .row { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+    .valluvar { width: 9rem; text-align: center; }
+    .verse { justify-self: stretch; }
+    .lines { font-size: var(--text-deck); white-space: normal; text-wrap: balance; }
+    .line + .line { padding-inline-start: 1em; }
+  }
+</style>

@@ -19,6 +19,7 @@ import AdvertStrip from "../components/AdvertStrip.astro";
 import Meta from "../components/Meta.astro";
 import Rule from "../components/Rule.astro";
 import Classified from "../components/Classified.astro";
+import Kural from "../components/Kural.astro";
 import { site } from "../site";
 import { yearsSince, inWords, formatShort, formatMonthYear } from "../lib/edition";
 import photo from "../assets/adheeban.jpg";
@@ -201,5 +202,14 @@ const description = `${site.person.name}, software engineer in ${site.paper.city
         />
       </Col>
     </Grid>
+
+    <Rule kind="heavy" space="none" />
+
+    <Kural
+      number={619}
+      chapter="ஆள்வினை உடைமை"
+      lines={["தெய்வத்தான் ஆகா தெனினும் முயற்சிதன்", "மெய்வருத்தக் கூலி தரும்."]}
+      gloss="Even if God does not grant it, effort pays the wage of the body's work."
+    />
   </Stack>
 </Base>
